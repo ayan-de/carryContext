@@ -203,25 +203,7 @@ export async function updateRegistry(
   entry: RegistryEntry,
   config: StorageConfig = DEFAULT_STORAGE_CONFIG
 ): Promise<void> {
-  const registryPath = join(config.dataDir, 'index.md');
-
-  let registry: SessionRegistry;
-
-  try {
-    await access(registryPath);
-    const content = await readFile(registryPath, 'utf-8');
-    const parsed = grayMatter(content);
-    registry = {
-      sessions: (parsed.data.sessions as RegistryEntry[]) || [],
-      lastUpdated: (parsed.data.lastUpdated as number) || 0,
-    };
-  } catch {
-    // Create new registry
-    registry = {
-      sessions: [],
-      lastUpdated: 0,
-    };
-  }
+  const registry = await loadRegistry(config);
 
   // Remove existing entry with same sessionId
   registry.sessions = registry.sessions.filter((s) => s.sessionId !== entry.sessionId);
@@ -236,15 +218,77 @@ export async function updateRegistry(
   registry.lastUpdated = Date.now();
 
   // Write back
-  const parsed = grayMatter.stringify(
-    `# Context Carry Session Registry\n\nThis file contains an index of all saved sessions.\n`,
-    {
-      sessions: registry.sessions,
-      lastUpdated: registry.lastUpdated,
+  await writeRegistry(registry, config);
+}
+
+/**
+ * Write the session registry to disk with human-readable format
+ */
+export async function writeRegistry(
+  registry: SessionRegistry,
+  config: StorageConfig = DEFAULT_STORAGE_CONFIG
+): Promise<void> {
+  const registryPath = join(config.dataDir, 'index.md');
+
+  // Build human-readable content
+  let content = `# Context Carry Session Registry\n\n`;
+  content += `> Last updated: ${new Date(registry.lastUpdated).toISOString()}\n`;
+  content += `> Total sessions: ${registry.sessions.length}\n\n`;
+  content += `---\n\n`;
+
+  if (registry.sessions.length === 0) {
+    content += `No sessions saved yet. Run \`ctx save\` to save your first session.\n`;
+  } else {
+    // Group sessions by project
+    const byProject = new Map<string, RegistryEntry[]>();
+    for (const session of registry.sessions) {
+      const existing = byProject.get(session.projectName) || [];
+      existing.push(session);
+      byProject.set(session.projectName, existing);
     }
-  );
+
+    for (const [projectName, sessions] of byProject) {
+      content += `## ${projectName}\n\n`;
+      for (const session of sessions) {
+        const date = new Date(session.timestamp).toLocaleDateString();
+        const time = new Date(session.timestamp).toLocaleTimeString();
+        content += `- **${session.branch}** (${date} ${time})\n`;
+        content += `  \`${session.sessionId.substring(0, 8)}\` - ${session.summary.substring(0, 80)}${session.summary.length > 80 ? '...' : ''}\n`;
+      }
+      content += `\n`;
+    }
+  }
+
+  // Prepend YAML frontmatter with full data
+  const parsed = grayMatter.stringify(content, {
+    sessions: registry.sessions,
+    lastUpdated: registry.lastUpdated,
+    version: 1,
+  });
+
   await mkdir(dirname(registryPath), { recursive: true });
   await writeFile(registryPath, parsed, 'utf-8');
+}
+
+/**
+ * Remove an entry from the registry
+ */
+export async function removeRegistryEntry(
+  sessionId: string,
+  config: StorageConfig = DEFAULT_STORAGE_CONFIG
+): Promise<boolean> {
+  const registry = await loadRegistry(config);
+  const initialLength = registry.sessions.length;
+
+  registry.sessions = registry.sessions.filter((s) => s.sessionId !== sessionId);
+
+  if (registry.sessions.length === initialLength) {
+    return false; // Entry not found
+  }
+
+  registry.lastUpdated = Date.now();
+  await writeRegistry(registry, config);
+  return true;
 }
 
 /**
@@ -439,18 +483,8 @@ export async function deleteSession(sessionId: string, config: StorageConfig = D
             }
           }
 
-          // Update registry
-          const registry = await loadRegistry(config);
-          registry.sessions = registry.sessions.filter((s) => s.sessionId !== sessionId);
-          registry.lastUpdated = Date.now();
-          const parsed = grayMatter.stringify(
-            `# Context Carry Session Registry\n\nThis file contains an index of all saved sessions.\n`,
-            {
-              sessions: registry.sessions,
-              lastUpdated: registry.lastUpdated,
-            }
-          );
-          await writeFile(join(config.dataDir, 'index.md'), parsed, 'utf-8');
+          // Update registry using the dedicated function
+          await removeRegistryEntry(sessionId, config);
 
           return true;
         }
@@ -468,4 +502,233 @@ export async function deleteSession(sessionId: string, config: StorageConfig = D
  */
 export function generateSessionId(): string {
   return randomUUID();
+}
+
+// ============================================================================
+// Registry Query Functions
+// ============================================================================
+
+/**
+ * Filter registry entries by criteria
+ */
+export function filterRegistryEntries(
+  registry: SessionRegistry,
+  options: {
+    project?: string;
+    branch?: string;
+    since?: number;
+    until?: number;
+    limit?: number;
+  }
+): RegistryEntry[] {
+  let entries = [...registry.sessions];
+
+  if (options.project) {
+    entries = entries.filter((e) => e.projectName === options.project);
+  }
+
+  if (options.branch) {
+    entries = entries.filter((e) => e.branch === options.branch);
+  }
+
+  if (options.since !== undefined) {
+    entries = entries.filter((e) => e.timestamp >= options.since!);
+  }
+
+  if (options.until !== undefined) {
+    entries = entries.filter((e) => e.timestamp <= options.until!);
+  }
+
+  if (options.limit !== undefined && options.limit > 0) {
+    entries = entries.slice(0, options.limit);
+  }
+
+  return entries;
+}
+
+/**
+ * Get registry entries for a specific project
+ */
+export function getProjectEntries(
+  registry: SessionRegistry,
+  projectName: string
+): RegistryEntry[] {
+  return filterRegistryEntries(registry, { project: projectName });
+}
+
+/**
+ * Get registry entries for a specific project and branch
+ */
+export function getBranchEntries(
+  registry: SessionRegistry,
+  projectName: string,
+  branch: string
+): RegistryEntry[] {
+  return filterRegistryEntries(registry, { project: projectName, branch });
+}
+
+/**
+ * Get the most recent session for a project/branch
+ */
+export function getLatestEntry(
+  registry: SessionRegistry,
+  projectName: string,
+  branch: string
+): RegistryEntry | null {
+  const entries = getBranchEntries(registry, projectName, branch);
+  return entries.length > 0 ? entries[0]! : null;
+}
+
+/**
+ * List all unique project names in the registry
+ */
+export function listProjects(registry: SessionRegistry): string[] {
+  const projects = new Set(registry.sessions.map((s) => s.projectName));
+  return Array.from(projects).sort();
+}
+
+/**
+ * List all branches for a project
+ */
+export function listBranches(registry: SessionRegistry, projectName: string): string[] {
+  const branches = new Set(
+    registry.sessions
+      .filter((s) => s.projectName === projectName)
+      .map((s) => s.branch)
+  );
+  return Array.from(branches).sort();
+}
+
+// ============================================================================
+// Registry Maintenance Functions
+// ============================================================================
+
+/**
+ * Rebuild the registry from all session files on disk
+ * Useful if the registry gets corrupted or out of sync
+ */
+export async function rebuildRegistry(
+  config: StorageConfig = DEFAULT_STORAGE_CONFIG
+): Promise<SessionRegistry> {
+  const entries: RegistryEntry[] = [];
+  const projectDirs = await listProjectDirectories(config.dataDir);
+
+  for (const projectDir of projectDirs) {
+    const projectName = projectDir.split('/').pop() || '';
+    const branchDirs = await readdir(projectDir);
+
+    for (const branchDir of branchDirs) {
+      const branchPath = join(projectDir, branchDir);
+
+      try {
+        const stats = await stat(branchPath);
+        if (!stats.isDirectory()) continue;
+
+        const files = await readdir(branchPath);
+        const mdFiles = files.filter((f) => f.endsWith('.md'));
+
+        for (const file of mdFiles) {
+          const filePath = join(branchPath, file);
+          try {
+            const contextFile = await readContextFile(filePath);
+
+            // Skip init entries
+            if (contextFile.frontmatter.sessionId === 'init') continue;
+
+            entries.push({
+              sessionId: contextFile.frontmatter.sessionId as string,
+              projectName: contextFile.projectName,
+              branch: contextFile.branch,
+              timestamp: contextFile.createdAt,
+              filePath,
+              summary: contextFile.content.substring(0, 200),
+            });
+          } catch {
+            // Skip files that can't be read
+          }
+        }
+      } catch {
+        // Skip directories that can't be read
+      }
+    }
+  }
+
+  // Sort by timestamp (newest first)
+  entries.sort((a, b) => b.timestamp - a.timestamp);
+
+  const registry: SessionRegistry = {
+    sessions: entries,
+    lastUpdated: Date.now(),
+  };
+
+  await writeRegistry(registry, config);
+  return registry;
+}
+
+/**
+ * Sync the registry with disk - remove entries for files that no longer exist
+ */
+export async function syncRegistry(
+  config: StorageConfig = DEFAULT_STORAGE_CONFIG
+): Promise<{ removed: number; total: number }> {
+  const registry = await loadRegistry(config);
+  const validEntries: RegistryEntry[] = [];
+
+  for (const entry of registry.sessions) {
+    try {
+      await access(entry.filePath);
+      validEntries.push(entry);
+    } catch {
+      // File doesn't exist, skip this entry
+    }
+  }
+
+  const removed = registry.sessions.length - validEntries.length;
+
+  if (removed > 0) {
+    registry.sessions = validEntries;
+    registry.lastUpdated = Date.now();
+    await writeRegistry(registry, config);
+  }
+
+  return {
+    removed,
+    total: validEntries.length,
+  };
+}
+
+/**
+ * Get registry statistics
+ */
+export async function getRegistryStats(
+  config: StorageConfig = DEFAULT_STORAGE_CONFIG
+): Promise<{
+  totalSessions: number;
+  totalProjects: number;
+  oldestSession: number | null;
+  newestSession: number | null;
+  lastUpdated: number;
+}> {
+  const registry = await loadRegistry(config);
+
+  if (registry.sessions.length === 0) {
+    return {
+      totalSessions: 0,
+      totalProjects: 0,
+      oldestSession: null,
+      newestSession: null,
+      lastUpdated: registry.lastUpdated,
+    };
+  }
+
+  const timestamps = registry.sessions.map((s) => s.timestamp);
+  const projects = new Set(registry.sessions.map((s) => s.projectName));
+
+  return {
+    totalSessions: registry.sessions.length,
+    totalProjects: projects.size,
+    oldestSession: Math.min(...timestamps),
+    newestSession: Math.max(...timestamps),
+    lastUpdated: registry.lastUpdated,
+  };
 }
