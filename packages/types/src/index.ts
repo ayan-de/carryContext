@@ -90,10 +90,25 @@ export interface WatcherConfig {
 // Configuration Types
 // ============================================================================
 
+export enum AIProvider {
+  ANTHROPIC = 'anthropic',
+  OPENAI = 'openai',
+  GEMINI = 'gemini',
+  GLM = 'glm',
+  GROK = 'grok',
+  CLAUDE_CODE = 'claude_code',
+  COPILOT = 'copilot',
+}
+
 export interface AppConfig {
   version: string;
   dataDir: string;
+  defaultProvider?: AIProvider;
   anthropic?: AnthropicConfig;
+  openai?: OpenAIConfig;
+  gemini?: GeminiConfig;
+  glm?: GLMConfig;
+  grok?: GrokConfig;
   maxContextTokens?: number;
   autoSave?: boolean;
   autoLoad?: boolean;
@@ -102,9 +117,48 @@ export interface AppConfig {
 
 export interface AnthropicConfig {
   apiKey?: string;
-  model: string;
-  maxTokens: number;
+  model?: string;
+  maxTokens?: number;
   temperature?: number;
+}
+
+export interface OpenAIConfig {
+  apiKey?: string;
+  model?: string;
+  maxTokens?: number;
+  temperature?: number;
+  baseUrl?: string;
+}
+
+export interface GeminiConfig {
+  apiKey?: string;
+  model?: string;
+  maxTokens?: number;
+  temperature?: number;
+}
+
+export interface GLMConfig {
+  apiKey?: string;
+  model?: string;
+  maxTokens?: number;
+  temperature?: number;
+  baseUrl?: string;
+}
+
+export interface GrokConfig {
+  apiKey?: string;
+  model?: string;
+  maxTokens?: number;
+  temperature?: number;
+}
+
+export interface AIProviderConfig {
+  provider: AIProvider;
+  apiKey?: string;
+  model?: string;
+  maxTokens?: number;
+  temperature?: number;
+  baseUrl?: string;
 }
 
 export interface ScorerConfig {
