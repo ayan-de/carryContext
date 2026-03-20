@@ -16,6 +16,7 @@ import { searchCommand } from './commands/search.js';
 import { statusCommand } from './commands/status.js';
 import { clearCommand } from './commands/clear.js';
 import { initCommand } from './commands/init.js';
+import { initializeStorage, DEFAULT_STORAGE_CONFIG } from '@contextcarry/core';
 
 const program = new Command();
 
@@ -33,6 +34,11 @@ program.addCommand(statusCommand);
 program.addCommand(clearCommand);
 program.addCommand(initCommand);
 
+// Bootstrap storage directory on first run before any command executes
+program.hook('preAction', async () => {
+  await initializeStorage(DEFAULT_STORAGE_CONFIG);
+});
+
 // Handle uncaught errors
 program.on('command:*', () => {
   console.error(chalk.red('Invalid command: %s'), program.args.join(' '));
@@ -40,4 +46,4 @@ program.on('command:*', () => {
   process.exit(1);
 });
 
-program.parse(process.argv);
+program.parseAsync(process.argv);

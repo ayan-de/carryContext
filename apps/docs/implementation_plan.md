@@ -57,7 +57,7 @@ User opens new terminal / new chat
 | 1.13 | Wire `ctx search <query>` command — grep across all sessions | `apps/cli/src/commands/search.ts` | ✅ |
 | 1.14 | Wire `ctx status` command — show active project + last saved | `apps/cli/src/commands/status.ts` | ✅ |
 | 1.15 | Wire `ctx clear` command — with confirmation prompt | `apps/cli/src/commands/clear.ts` | ✅ |
-| 1.16 | Bootstrap `~/.contextcarry/` folder on first run | `packages/core/src/storage.ts` | ⬜ |
+| 1.16 | Bootstrap `~/.contextcarry/` folder on first run | `packages/core/src/storage.ts` | ✅ |
 | 1.17 | Write `config.json` schema + reader | `packages/core/src/config.ts` | ⬜ |
 | 1.18 | Write `index.md` updater — master session registry | `packages/core/src/storage.ts` | ⬜ |
 | 1.19 | Add `ctx` binary to PATH via `package.json` bin field | `apps/cli/package.json` | ⬜ |
@@ -283,7 +283,7 @@ User switches to feature/payments branch
 ## 📊 Total Progress
 
 ```
-Phase 1  ████████████████████████   15/20   Core Engine + CLI
+Phase 1  ████████████████████████   16/20   Core Engine + CLI
 Phase 2  ░░░░░░░░░░░░░    0/13   Claude Code Plugin
 Phase 3  ░░░░░░░░░░░░     0/12   MCP Server
 Phase 4  ░░░░░░░░░░░      0/11   Editor Plugins
@@ -292,5 +292,5 @@ Phase 6  ░░░░░░░░░░       0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░     0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░      0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ████████████████████████░░░░░   15/105  steps
+Total    ████████████████████████░░░░░   16/105  steps
 ```
