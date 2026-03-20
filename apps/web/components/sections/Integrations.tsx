@@ -33,6 +33,7 @@ export function Integrations() {
                 width={item.size}
                 height={item.size}
                 className="object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                style={{ width: 'auto', height: 'auto' }}
               />
               {/* <span className="text-sm font-semibold text-on-surface-variant/70 group-hover:text-on-surface transition-colors">
                 {item.label}

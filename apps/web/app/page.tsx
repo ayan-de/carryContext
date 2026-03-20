@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <>
       {/* Grid Background */}
-      <div className="grid-background" />
+      {/* <div className="grid-background" /> */}
 
       {/* Navigation */}
       <Navbar />
