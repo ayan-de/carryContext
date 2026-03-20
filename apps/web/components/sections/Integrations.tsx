@@ -34,9 +34,9 @@ export function Integrations() {
                 height={item.size}
                 className="object-contain opacity-80 group-hover:opacity-100 transition-opacity"
               />
-              <span className="text-sm font-semibold text-on-surface-variant/70 group-hover:text-on-surface transition-colors">
+              {/* <span className="text-sm font-semibold text-on-surface-variant/70 group-hover:text-on-surface transition-colors">
                 {item.label}
-              </span>
+              </span> */}
             </div>
           ))}
         </div>
