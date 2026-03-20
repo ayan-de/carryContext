@@ -50,7 +50,7 @@ User opens new terminal / new chat
 | 1.6 | Build `storage.ts` — read/write .md files with gray-matter | `packages/core/src/storage.ts` | ✅ |
 | 1.7 | Build `summariser.ts` — compress session via Anthropic API | `packages/core/src/summariser.ts` | ✅ |
 | 1.8 | Build `injector.ts` — format LATEST.md as context preamble | `packages/core/src/injector.ts` | ✅ |
-| 1.9 | Build `scorer.ts` — rank sessions by relevance to current context | `packages/core/src/scorer.ts` | ⬜ |
+| 1.9 | Build `scorer.ts` — rank sessions by relevance to current context | `packages/core/src/scorer.ts` | ✅ |
 | 1.10 | Wire `ctx save` command | `apps/cli/src/commands/save.ts` | ⬜ |
 | 1.11 | Wire `ctx load` command | `apps/cli/src/commands/load.ts` | ⬜ |
 | 1.12 | Wire `ctx list` command | `apps/cli/src/commands/list.ts` | ⬜ |
@@ -283,7 +283,7 @@ User switches to feature/payments branch
 ## 📊 Total Progress
 
 ```
-Phase 1  █████████░░░░░░   8/20   Core Engine + CLI
+Phase 1  ██████████░░░░░░   9/20   Core Engine + CLI
 Phase 2  ░░░░░░░░░░░░░    0/13   Claude Code Plugin
 Phase 3  ░░░░░░░░░░░░     0/12   MCP Server
 Phase 4  ░░░░░░░░░░░      0/11   Editor Plugins
@@ -292,5 +292,5 @@ Phase 6  ░░░░░░░░░░       0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░     0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░      0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    █████████░░░░░░░   8/105  steps
+Total    ██████████░░░░░░░   9/105  steps
 ```
