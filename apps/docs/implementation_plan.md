@@ -52,7 +52,7 @@ User opens new terminal / new chat
 | 1.8 | Build `injector.ts` — format LATEST.md as context preamble | `packages/core/src/injector.ts` | ✅ |
 | 1.9 | Build `scorer.ts` — rank sessions by relevance to current context | `packages/core/src/scorer.ts` | ✅ |
 | 1.10 | Wire `ctx save` command | `apps/cli/src/commands/save.ts` | ✅ |
-| 1.11 | Wire `ctx load` command | `apps/cli/src/commands/load.ts` | ⬜ |
+| 1.11 | Wire `ctx load` command | `apps/cli/src/commands/load.ts` | ✅ |
 | 1.12 | Wire `ctx list` command | `apps/cli/src/commands/list.ts` | ⬜ |
 | 1.13 | Wire `ctx search <query>` command — grep across all sessions | `apps/cli/src/commands/search.ts` | ⬜ |
 | 1.14 | Wire `ctx status` command — show active project + last saved | `apps/cli/src/commands/status.ts` | ⬜ |
@@ -283,7 +283,7 @@ User switches to feature/payments branch
 ## 📊 Total Progress
 
 ```
-Phase 1  ███████████░░░░░░   10/20   Core Engine + CLI
+Phase 1  ███████████████░░░░░   11/20   Core Engine + CLI
 Phase 2  ░░░░░░░░░░░░░    0/13   Claude Code Plugin
 Phase 3  ░░░░░░░░░░░░     0/12   MCP Server
 Phase 4  ░░░░░░░░░░░      0/11   Editor Plugins
@@ -292,5 +292,5 @@ Phase 6  ░░░░░░░░░░       0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░     0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░      0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ███████████░░░░░░░   10/105  steps
+Total    ███████████████░░░░░░░   11/105  steps
 ```
