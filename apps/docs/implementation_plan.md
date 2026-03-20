@@ -42,13 +42,13 @@ User opens new terminal / new chat
 
 | Step | Task | File(s) | Status |
 |------|------|---------|--------|
-| 1.1 | Init Turborepo monorepo with pnpm workspaces | `turbo.json`, `pnpm-workspace.yaml`, root `package.json` | ⬜ |
-| 1.2 | Scaffold `packages/types` — shared TS interfaces | `packages/types/src/index.ts` | ⬜ |
-| 1.3 | Scaffold `packages/core` with tsconfig | `packages/core/package.json`, `packages/core/tsconfig.json` | ⬜ |
-| 1.4 | Scaffold `apps/cli` with commander entry point | `apps/cli/src/index.ts`, `apps/cli/package.json` | ⬜ |
-| 1.5 | Build `watcher.ts` — detect project name + git branch | `packages/core/src/watcher.ts` | ⬜ |
-| 1.6 | Build `storage.ts` — read/write .md files with gray-matter | `packages/core/src/storage.ts` | ⬜ |
-| 1.7 | Build `summariser.ts` — compress session via Anthropic API | `packages/core/src/summariser.ts` | ⬜ |
+| 1.1 | Init Turborepo monorepo with pnpm workspaces | `turbo.json`, `pnpm-workspace.yaml`, root `package.json` | ✅ |
+| 1.2 | Scaffold `packages/types` — shared TS interfaces | `packages/types/src/index.ts` | ✅ |
+| 1.3 | Scaffold `packages/core` with tsconfig | `packages/core/package.json`, `packages/core/tsconfig.json` | ✅ |
+| 1.4 | Scaffold `apps/cli` with commander entry point | `apps/cli/src/index.ts`, `apps/cli/package.json` | ✅ |
+| 1.5 | Build `watcher.ts` — detect project name + git branch | `packages/core/src/watcher.ts` | ✅ |
+| 1.6 | Build `storage.ts` — read/write .md files with gray-matter | `packages/core/src/storage.ts` | ✅ |
+| 1.7 | Build `summariser.ts` — compress session via Anthropic API | `packages/core/src/summariser.ts` | ✅ |
 | 1.8 | Build `injector.ts` — format LATEST.md as context preamble | `packages/core/src/injector.ts` | ⬜ |
 | 1.9 | Build `scorer.ts` — rank sessions by relevance to current context | `packages/core/src/scorer.ts` | ⬜ |
 | 1.10 | Wire `ctx save` command | `apps/cli/src/commands/save.ts` | ⬜ |
@@ -283,7 +283,7 @@ User switches to feature/payments branch
 ## 📊 Total Progress
 
 ```
-Phase 1  ░░░░░░░░░░░░░░   0/20   Core Engine + CLI
+Phase 1  ███████░░░░░░░░   7/20   Core Engine + CLI
 Phase 2  ░░░░░░░░░░░░░    0/13   Claude Code Plugin
 Phase 3  ░░░░░░░░░░░░     0/12   MCP Server
 Phase 4  ░░░░░░░░░░░      0/11   Editor Plugins
@@ -292,5 +292,5 @@ Phase 6  ░░░░░░░░░░       0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░     0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░      0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ░░░░░░░░░░░░░░   0/105  steps
+Total    ███████░░░░░░░░   7/105  steps
 ```

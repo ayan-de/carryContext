@@ -2,73 +2,128 @@
  * Summariser Module - Compress session via multiple AI APIs
  *
  * Supports: Anthropic, OpenAI, Gemini, GLM, Grok
+ *
+ * Uses provider factory pattern for extensibility
  */
 
 import type { SessionSummary, AIProvider, AIProviderConfig } from '@contextcarry/types';
+import { createProvider } from './provider-factory.js';
 
+/**
+ * Summarize a session transcript into structured format
+ * Routes to appropriate provider based on config
+ */
 export async function summarizeSession(
   transcript: string,
   config: AIProviderConfig
 ): Promise<SessionSummary> {
-  // TODO: Implement session summarisation
-  // Will route to appropriate provider based on config.provider
-  throw new Error('Not implemented');
-}
+  const provider = createProvider(config);
+  const result = await provider.summarize(
+    transcript,
+    config.model,
+    {
+      temperature: config.temperature,
+      maxTokens: config.maxTokens,
+    }
+  );
 
-export async function compressContext(
-  transcript: string,
-  provider: AIProvider,
-  config: AIProviderConfig
-): Promise<string> {
-  // TODO: Implement context compression
-  // Will route to appropriate provider based on provider enum
-  throw new Error('Not implemented');
+  return result.summary;
 }
 
 /**
- * Provider-specific summarisers
+ * Compress a transcript to fit within token limits
+ * Routes to appropriate provider based on provider enum
  */
-export async function summarizeWithAnthropic(
+export async function compressContext(
   transcript: string,
-  apiKey: string,
-  model?: string
-): Promise<SessionSummary> {
-  // TODO: Implement Anthropic summarisation
-  throw new Error('Not implemented');
+  provider: AIProvider,
+  config: AIProviderConfig,
+  maxTokens: number = 4096
+): Promise<string> {
+  const providerInstance = createProvider({ ...config, provider });
+  return providerInstance.compress(transcript, maxTokens, config.model);
 }
 
-export async function summarizeWithOpenAI(
+/**
+ * Summarize with full result including metadata
+ * Returns token usage, model info, and both summary and compressed text
+ */
+export async function summarizeSessionFull(
   transcript: string,
-  apiKey: string,
-  model?: string
-): Promise<SessionSummary> {
-  // TODO: Implement OpenAI summarisation
-  throw new Error('Not implemented');
+  config: AIProviderConfig
+): Promise<{
+  summary: SessionSummary;
+  compressed: string;
+  tokensUsed: number;
+  model: string;
+  provider: string;
+}> {
+  const provider = createProvider(config);
+  const result = await provider.summarize(
+    transcript,
+    config.model,
+    {
+      temperature: config.temperature,
+      maxTokens: config.maxTokens,
+    }
+  );
+
+  return result;
 }
 
-export async function summarizeWithGemini(
-  transcript: string,
-  apiKey: string,
-  model?: string
-): Promise<SessionSummary> {
-  // TODO: Implement Gemini summarisation
-  throw new Error('Not implemented');
+/**
+ * Check if a provider is available with the given credentials
+ */
+export async function checkProviderAvailability(
+  provider: AIProvider,
+  config: AIProviderConfig
+): Promise<boolean> {
+  try {
+    const providerInstance = createProvider({ ...config, provider });
+    return await providerInstance.checkAvailability();
+  } catch (error) {
+    return false;
+  }
 }
 
-export async function summarizeWithGLM(
+/**
+ * Extract keywords from transcript for search indexing
+ * Uses the summarize method and extracts from key decisions and next steps
+ */
+export async function extractKeywordsFromSummary(
   transcript: string,
-  apiKey: string,
-  model?: string
-): Promise<SessionSummary> {
-  // TODO: Implement GLM summarisation
-  throw new Error('Not implemented');
+  config: AIProviderConfig
+): Promise<string[]> {
+  const summary = await summarizeSession(transcript, config);
+
+  // Combine key decisions and next steps as keywords
+  const keywords: string[] = [
+    ...summary.keyDecisions,
+    ...summary.nextSteps,
+    ...summary.filesWorkedOn,
+  ];
+
+  // Extract unique keywords and filter short ones
+  const uniqueKeywords = Array.from(new Set(keywords))
+    .filter(keyword => keyword.length > 3);
+
+  return uniqueKeywords;
 }
 
-export async function summarizeWithGrok(
-  transcript: string,
-  apiKey: string,
-  model?: string
-): Promise<SessionSummary> {
-  // TODO: Implement Grok summarisation
-  throw new Error('Not implemented');
+/**
+ * Validate provider configuration before use
+ */
+export function validateProviderConfigForSummarizer(config: AIProviderConfig): {
+  valid: boolean;
+  error?: string;
+} {
+  try {
+    const provider = createProvider(config);
+    return provider.validateConfig(config);
+  } catch (error) {
+    return {
+      valid: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
 }
