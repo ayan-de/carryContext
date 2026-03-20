@@ -1,4 +1,6 @@
+"use client";
 import { Icon, type IconName } from "@/components/ui";
+import SpotlightCard from "../SpotlightCard";
 
 type BaseFeature = {
   id: string;
@@ -82,9 +84,10 @@ export function Features() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {features.map((feature) => (
-            <div
+            <SpotlightCard
               key={feature.id}
-              className={`${feature.span} ${feature.bgClass} p-10 rounded-2xl ghost-border group overflow-hidden relative`}
+              className={`${feature.span} ${feature.bgClass} p-10 rounded-2xl ghost-border group overflow-hidden border-neutral-700/50`}
+              spotlightColor="rgba(139, 92, 246, 0.15)"
             >
               {"decorativeIcon" in feature && feature.decorativeIcon && (
                 <div className="absolute bottom-0 right-0 p-8 translate-y-8 group-hover:translate-y-0 transition-transform duration-500 opacity-20 group-hover:opacity-100">
@@ -136,7 +139,7 @@ export function Features() {
                   </p>
                 </>
               )}
-            </div>
+            </SpotlightCard>
           ))}
         </div>
       </div>
