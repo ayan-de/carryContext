@@ -1,15 +1,15 @@
-import Image from "next/image";
 import RotatingText from "../RotatingText";
+import LogoLoop from "../LogoLoop";
 
 const integrations = [
-  { src: "/claudecode-1.svg", label: "Claude Code", size: 150 },
-  { src: "/kilocode.svg", label: "KiloCode", size: 150 },
-  { src: "/crush.svg", label: "Crush", size: 150 },
-  { src: "/roocode.svg", label: "RooCode", size: 150 },
-  { src: "/opencode.svg", label: "OpenCode", size: 150 },
-  { src: "/cline.svg", label: "Cline", size: 150 },
-  { src: "/cursor.svg", label: "Cursor", size: 150 },
-  { src: "/goose.svg", label: "Goose", size: 150 },
+  { src: "/claudecode-1.svg", alt: "Claude Code" },
+  { src: "/kilocode.svg", alt: "KiloCode" },
+  { src: "/crush.svg", alt: "Crush" },
+  { src: "/roocode.svg", alt: "RooCode" },
+  { src: "/opencode.svg", alt: "OpenCode" },
+  { src: "/cline.svg", alt: "Cline" },
+  { src: "/cursor.svg", alt: "Cursor" },
+  { src: "/goose.svg", alt: "Goose" },
 ];
 
 export function Integrations() {
@@ -34,25 +34,18 @@ export function Integrations() {
         <p className="text-on-surface-variant text-sm md:text-base mb-16">
           Seamlessly inject context into any AI workflow.
         </p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {integrations.map((item) => (
-            <div
-              key={item.label}
-              className="flex flex-col items-center gap-4 p-6 rounded-xl bg-surface-container-high ghost-border group cursor-pointer hover:border-primary/50 hover:bg-surface-container-highest transition-all duration-300"
-            >
-              <Image
-                src={item.src}
-                alt={item.label}
-                width={item.size}
-                height={item.size}
-                className="object-contain opacity-80 group-hover:opacity-100 transition-opacity"
-                style={{ width: 'auto', height: 'auto' }}
-              />
-              {/* <span className="text-sm font-semibold text-on-surface-variant/70 group-hover:text-on-surface transition-colors">
-                {item.label}
-              </span> */}
-            </div>
-          ))}
+        <div className="h-24">
+          <LogoLoop
+            logos={integrations}
+            speed={80}
+            direction="left"
+            logoHeight={64}
+            gap={48}
+            hoverSpeed={0}
+            scaleOnHover
+            fadeOut
+            ariaLabel="AI tool integrations"
+          />
         </div>
       </div>
     </section>
