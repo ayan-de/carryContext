@@ -60,7 +60,7 @@ User opens new terminal / new chat
 | 1.16 | Bootstrap `~/.contextcarry/` folder on first run | `packages/core/src/storage.ts` | ✅ |
 | 1.17 | Write `config.json` schema + reader | `packages/core/src/config.ts` | ✅ |
 | 1.18 | Write `index.md` updater — master session registry | `packages/core/src/storage.ts` | ✅ |
-| 1.19 | Add `ctx` binary to PATH via `package.json` bin field | `apps/cli/package.json` | ⬜ |
+| 1.19 | Add `ctx` binary to PATH via `package.json` bin field | `apps/cli/package.json` | ✅ |
 | 1.20 | Manual end-to-end test: save → load → verify preamble | — | ⬜ |
 
 ---
@@ -283,7 +283,7 @@ User switches to feature/payments branch
 ## 📊 Total Progress
 
 ```
-Phase 1  ████████████████████████   18/20   Core Engine + CLI
+Phase 1  ████████████████████████   19/20   Core Engine + CLI
 Phase 2  ░░░░░░░░░░░░░    0/13   Claude Code Plugin
 Phase 3  ░░░░░░░░░░░░     0/12   MCP Server
 Phase 4  ░░░░░░░░░░░      0/11   Editor Plugins
@@ -292,5 +292,5 @@ Phase 6  ░░░░░░░░░░       0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░     0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░      0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ████████████████████████░░░░░   18/105  steps
+Total    ████████████████████████░░░░░   19/105  steps
 ```
