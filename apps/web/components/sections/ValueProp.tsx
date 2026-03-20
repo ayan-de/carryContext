@@ -1,3 +1,6 @@
+'use client';
+import CountUp from '../CountUp';
+
 const stats = [
   { value: "94%", label: "Less Repetition" },
   { value: "2.4x", label: "Faster Iteration" },
@@ -19,7 +22,34 @@ export function ValueProp() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
         {stats.map((stat) => (
           <div key={stat.label}>
-            <div className="text-3xl font-bold text-on-surface mb-1">{stat.value}</div>
+            <div className="text-3xl font-bold text-on-surface mb-1">
+              {stat.label === "Less Repetition" ? (
+                <>
+                  <CountUp
+                    from={0}
+                    to={94}
+                    separator=","
+                    direction="up"
+                    duration={1}
+                    className="count-up-text"
+                    startWhen
+                  />%
+                </>
+              ) : stat.label === "Context Latency" ? (
+                <>
+                  <CountUp
+                    from={0}
+                    to={500}
+                    direction="down"
+                    duration={1}
+                    className="count-up-text"
+                    startWhen
+                  />ms
+                </>
+              ) : (
+                stat.value
+              )}
+            </div>
             <div className="text-xs uppercase tracking-widest text-on-surface-variant">
               {stat.label}
             </div>
