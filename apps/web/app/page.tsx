@@ -5,6 +5,7 @@ import { Integrations } from "@/components/sections/Integrations";
 import { Features } from "@/components/sections/Features";
 import { ValueProp } from "@/components/sections/ValueProp";
 import { Testimonials } from "@/components/sections/Testimonials";
+import SplashCursor from "@/components/SplashCursor";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
         <Features />
         <ValueProp />
         <Testimonials />
+        <SplashCursor />
       </main>
 
       {/* Footer */}
