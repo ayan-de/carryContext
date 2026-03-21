@@ -5,8 +5,10 @@ import {
   listBranches,
   getBranchEntries,
   deleteSession,
+  loadConfig,
+  saveConfig,
 } from 'contextcarry-core';
-import type { StorageConfig } from 'contextcarry-types';
+import type { StorageConfig, AppConfig } from 'contextcarry-types';
 
 export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'contextcarry.sessions';
@@ -36,12 +38,70 @@ export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.html = this._getHtml(codiconUri);
     this._sendTree('');
+    this._sendConfig();
 
     webviewView.webview.onDidReceiveMessage(async (msg) => {
       switch (msg.type) {
         case 'search':
           await this._sendTree(msg.query);
           break;
+        case 'changeProvider': {
+          const config = await loadConfig();
+
+          const providerModels: Record<string, string[]> = {
+            anthropic: ['claude-sonnet-4-20250514', 'claude-haiku-4-20250414', 'claude-opus-4-20250514'],
+            openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'o1', 'o1-mini'],
+            gemini: ['gemini-2.0-flash', 'gemini-2.0-pro', 'gemini-1.5-flash', 'gemini-1.5-pro'],
+            glm: ['glm-4.5', 'glm-4-plus', 'glm-4-flash'],
+            grok: ['grok-3', 'grok-3-mini', 'grok-2'],
+          };
+
+          // Step 1: Pick provider
+          const providers = Object.keys(providerModels);
+          const pickedProvider = await vscode.window.showQuickPick(
+            providers.map(p => ({
+              label: p,
+              description: p === config.defaultProvider ? '(current)' : '',
+            })),
+            { placeHolder: 'Select AI provider' },
+          );
+          if (!pickedProvider) break;
+          const provider = pickedProvider.label;
+
+          // Step 2: Pick model
+          const models = providerModels[provider] || [];
+          const currentModel = (config[provider as keyof typeof config] as any)?.model;
+          const pickedModel = await vscode.window.showQuickPick(
+            models.map(m => ({
+              label: m,
+              description: m === currentModel ? '(current)' : '',
+            })),
+            { placeHolder: `Select model for ${provider}` },
+          );
+          if (!pickedModel) break;
+
+          // Step 3: Ask for API key (pre-fill existing)
+          const existingKey = (config[provider as keyof typeof config] as any)?.apiKey || '';
+          const apiKey = await vscode.window.showInputBox({
+            prompt: `Enter API key for ${provider}`,
+            value: existingKey,
+            password: true,
+            placeHolder: 'sk-...',
+          });
+          if (apiKey === undefined) break;
+
+          // Step 4: Save to config
+          config.defaultProvider = provider as any;
+          const providerConfig = (config[provider as keyof typeof config] as any) || {};
+          providerConfig.model = pickedModel.label;
+          if (apiKey) providerConfig.apiKey = apiKey;
+          (config as any)[provider] = providerConfig;
+
+          await saveConfig(config);
+          this._sendConfig();
+          vscode.window.showInformationMessage(`Switched to ${provider} / ${pickedModel.label}`);
+          break;
+        }
         case 'open':
           await vscode.window.showTextDocument(vscode.Uri.file(msg.filePath), { preview: true });
           break;
@@ -87,6 +147,15 @@ export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
         }
       }
     });
+  }
+
+  private async _sendConfig() {
+    if (!this._view) return;
+    const config = await loadConfig();
+    const provider = config.defaultProvider || 'none';
+    const providerConfig = config[provider as keyof AppConfig] as { model?: string } | undefined;
+    const model = providerConfig?.model || '';
+    this._view.webview.postMessage({ type: 'config', provider, model });
   }
 
   private async _sendTree(query: string) {
@@ -286,6 +355,44 @@ export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
     font-size: 12px;
     padding: 20px 8px;
   }
+
+  .footer {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    background: var(--vscode-sideBar-background);
+    border-top: 1px solid var(--vscode-panel-border, var(--vscode-widget-border, transparent));
+    font-size: 11px;
+    color: var(--vscode-descriptionForeground);
+  }
+  .footer-info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow: hidden;
+  }
+  .footer-info .codicon { font-size: 13px; }
+  .footer-provider {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .btn-change {
+    background: none;
+    border: none;
+    color: var(--vscode-textLink-foreground);
+    cursor: pointer;
+    font-size: 11px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .btn-change:hover {
+    background: var(--vscode-list-hoverBackground);
+  }
 </style>
 </head>
 <body>
@@ -297,12 +404,23 @@ export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
     <button class="btn-refresh" id="refreshBtn" title="Refresh"><i class="codicon codicon-refresh"></i></button>
   </div>
   <div id="tree" class="tree"></div>
+  <div class="footer">
+    <div class="footer-info">
+      <i class="codicon codicon-hubot"></i>
+      <span class="footer-provider" id="providerLabel">--</span>
+    </div>
+    <button class="btn-change" id="changeBtn">Change</button>
+  </div>
 
   <script>
     const vscode = acquireVsCodeApi();
     const input = document.getElementById('search');
     const treeDiv = document.getElementById('tree');
     let debounceTimer;
+
+    document.getElementById('changeBtn').addEventListener('click', () => {
+      vscode.postMessage({ type: 'changeProvider' });
+    });
 
     document.getElementById('refreshBtn').addEventListener('click', () => {
       input.value = '';
@@ -318,6 +436,10 @@ export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
 
     window.addEventListener('message', (e) => {
       if (e.data.type === 'tree') renderTree(e.data.tree, e.data.query);
+      if (e.data.type === 'config') {
+        const label = e.data.model ? e.data.provider + ' / ' + e.data.model : e.data.provider;
+        document.getElementById('providerLabel').textContent = label;
+      }
     });
 
     function renderTree(tree, query) {
