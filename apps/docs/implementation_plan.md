@@ -12,7 +12,7 @@
 | 1 | **Core Engine + CLI** | Weeks 1-2 | `ctx save` / `ctx load` working, .md brain, Anthropic summariser |
 | 2 | **Claude Code Plugin** | Weeks 3-4 | Hooks wired, auto-save on Stop, auto-inject on UserPromptSubmit |
 | 3 | **MCP Server** | Weeks 5-6 | Agent-agnostic bridge, Cursor + Windsurf support |
-| 4 | **Editor Plugins** | Weeks 7-9 | VS Code extension, Copilot bridge |
+| 4 | **VS Code Dashboard** | Weeks 7-9 | Visual session explorer, status bar, diff view |
 | 5 | **Chrome Extension** | Weeks 10-12 | Claude.ai + ChatGPT + Gemini injection via native messaging |
 | 6 | **Context Intelligence** | Weeks 13-15 | Scoring algo, semantic search, relevance ranking |
 | 7 | **Testing Suite** | Weeks 16-17 | Unit, integration, e2e coverage |
@@ -167,36 +167,44 @@ Agent calls save_context({ cwd: "/path/to/project", transcript: "..." })
 
 ---
 
-## Phase 4: Editor Plugins (Weeks 7-9)
+## Phase 4: VS Code Dashboard (Weeks 7-9)
 
-**Goal**: VS Code users and Copilot users get context carry via a native extension.
+**Goal**: Visual layer for managing contexts. The MCP server (Phase 3) handles all AI agent communication — this extension gives humans a GUI to see, browse, and manage their saved contexts.
+
+**Architecture**: Extension connects to `@contextcarry/core` directly (shared package). No CLI shelling, no duplicate logic.
 
 ```
 VS Code opens
   → extension activates
-    → detects project + git branch
-      → calls ctx load via child_process
-        → shows "Context loaded" status bar item
+    → detects workspace + git branch via core/watcher
+      → status bar shows "Context: my-app/main ✓"
 
-User opens GitHub Copilot chat
-  → extension intercepts
-    → prepends LATEST.md content as system context
-      → Copilot receives full project history
+User clicks status bar (or opens sidebar)
+  → Session Explorer panel opens
+    → lists all sessions for current project
+      → click to preview, compare, or delete
+
+User clicks "Save Context" button
+  → core/storage writes LATEST.md
+    → toast: "Context saved for my-app/main"
+      → sidebar refreshes automatically
 ```
 
 | Step | Task | File(s) | Status |
 |------|------|---------|--------|
 | 4.1 | Scaffold VS Code extension project | `apps/vscode/package.json`, `apps/vscode/src/extension.ts` | ⬜ |
-| 4.2 | Build activation handler — detects workspace + branch | `apps/vscode/src/activation.ts` | ⬜ |
-| 4.3 | Build status bar item — "Context: my-app/main ✓" | `apps/vscode/src/statusBar.ts` | ⬜ |
-| 4.4 | Build `Context Carry: Save` command palette command | `apps/vscode/src/commands/save.ts` | ⬜ |
-| 4.5 | Build `Context Carry: Load` command palette command | `apps/vscode/src/commands/load.ts` | ⬜ |
-| 4.6 | Build `Context Carry: Show` command — opens LATEST.md in editor | `apps/vscode/src/commands/show.ts` | ⬜ |
-| 4.7 | Bridge to local CLI via `child_process.execSync` | `apps/vscode/src/bridge.ts` | ⬜ |
-| 4.8 | Add Copilot chat participant integration | `apps/vscode/src/copilot.ts` | ⬜ |
-| 4.9 | Write VS Code marketplace manifest | `apps/vscode/package.json` (contributes section) | ⬜ |
-| 4.10 | Test: VS Code loads → status bar shows active context | — | ⬜ |
-| 4.11 | Test: Copilot chat receives context preamble | — | ⬜ |
+| 4.2 | Build activation handler — detects workspace + branch via `@contextcarry/core` | `apps/vscode/src/activation.ts` | ⬜ |
+| 4.3 | Build status bar item — "Context: my-app/main ✓" with click actions | `apps/vscode/src/statusBar.ts` | ⬜ |
+| 4.4 | Build Session Explorer sidebar — TreeView listing all sessions for project | `apps/vscode/src/views/sessionExplorer.ts` | ⬜ |
+| 4.5 | Build session preview — click a session to view its content in a read-only editor | `apps/vscode/src/views/sessionPreview.ts` | ⬜ |
+| 4.6 | Build session diff — compare two sessions side-by-side | `apps/vscode/src/commands/diffSessions.ts` | ⬜ |
+| 4.7 | Build `Context Carry: Save` command palette command | `apps/vscode/src/commands/save.ts` | ⬜ |
+| 4.8 | Build `Context Carry: Delete Session` command with confirmation | `apps/vscode/src/commands/delete.ts` | ⬜ |
+| 4.9 | Build notification toasts — "Context saved", "Context loaded" | `apps/vscode/src/notifications.ts` | ⬜ |
+| 4.10 | Write VS Code marketplace manifest (contributes: views, commands, statusBar) | `apps/vscode/package.json` | ⬜ |
+| 4.11 | Test: VS Code loads → status bar shows active context | — | ⬜ |
+| 4.12 | Test: Session Explorer lists correct sessions + preview works | — | ⬜ |
+| 4.13 | Test: Diff view shows changes between two sessions | — | ⬜ |
 
 ---
 
@@ -313,11 +321,11 @@ User switches to feature/payments branch
 Phase 1  ████████████████████████   20/20   Core Engine + CLI ✓
 Phase 2  █████████████████████████  13/13   Claude Code Plugin ✓
 Phase 3  ░░░░░░░░░░░░░░░░░░ 0/18   MCP Server
-Phase 4  ░░░░░░░░░░░        0/11   Editor Plugins
+Phase 4  ░░░░░░░░░░░░░      0/13   VS Code Dashboard
 Phase 5  ░░░░░░░░░░░░░░░░   0/16   Chrome Extension
 Phase 6  ░░░░░░░░░░         0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░       0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░        0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ████████████████████████████░░░░░   33/111  steps
+Total    ████████████████████████████░░░░░   33/113  steps
 ```
