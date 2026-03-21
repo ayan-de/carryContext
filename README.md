@@ -1,183 +1,399 @@
-# Context Carry
+# @thisisayande/contextcarry
 
-**Save your AI session context. Restore it anywhere.**
+> Never lose context across AI chat sessions. Save, restore, and search your conversation history.
 
-[![npm version](https://img.shields.io/npm/v/@thisisayande/contextcarry)](https://www.npmjs.com/package/@thisisayande/contextcarry)
-[![license](https://img.shields.io/npm/l/@thisisayande/contextcarry)](./LICENSE)
-
----
-
-## What is Context Carry?
-
-Context Carry (`ctx`) is a CLI tool that compresses and saves your AI chat session context, then restores it as a preamble in a new conversation — so you never lose progress when a chat window resets.
-
-It auto-detects your project and git branch, uses AI to summarize your session, and stores everything locally in `~/.contextcarry/`.
-
----
-
-## Installation
-
-```sh
-npm install -g @thisisayande/contextcarry
-```
-
-Or run without installing:
-
-```sh
-npx @thisisayande/contextcarry --help
-```
-
----
+**Context Carry** is a CLI tool that saves your AI session context and restores it across new chats. Perfect for developers who work with Claude, ChatGPT, Gemini, or any AI assistant and want to maintain continuity between sessions.
 
 ## Quick Start
 
-```sh
-# 1. Initialize config (sets up API key, default provider)
-ctx init
+```bash
+# Install globally
+npm install -g @thisisayande/contextcarry
 
-# 2. Save your current session (paste or pipe transcript)
-ctx save --stdin
-
-# 3. Load context into your next chat
-ctx load
+# Or use with npx (no install required)
+npx @thisisayande/contextcarry --help
 ```
 
----
+```bash
+# Save your current session context
+ctx save
 
-## Commands Reference
+# Load context in a new session
+ctx load
+
+# See what's saved
+ctx status
+```
+
+## Why Context Carry?
+
+- **Never repeat yourself** - Stop re-explaining your project to AI assistants
+- **Branch-aware** - Automatically tracks different contexts per git branch
+- **Smart compression** - AI-powered summarization compresses hours of work into concise context
+- **Search everything** - Find any past session instantly
+- **Works offline** - All data stored locally in `~/.contextcarry/`
+
+## Installation
+
+### npm
+```bash
+npm install -g @thisisayande/contextcarry
+```
+
+### pnpm
+```bash
+pnpm add -g @thisisayande/contextcarry
+```
+
+### yarn
+```bash
+yarn global add @thisisayande/contextcarry
+```
+
+## Commands
 
 ### `ctx save`
 
-Save and compress a session transcript.
+Save your current session context. The CLI detects your project name and git branch automatically.
 
-| Flag | Description |
-|------|-------------|
-| `-s, --stdin` | Read transcript from stdin |
-| `-a, --auto` | Silent mode (for hooks) |
-| `-f, --file <path>` | Read transcript from file |
-| `-o, --output <path>` | Custom output file path |
-| `-p, --project <name>` | Override project name |
-| `-b, --branch <name>` | Override branch name |
-| `--provider <name>` | AI provider: `anthropic`, `openai`, `gemini`, `glm`, `grok` (default: `anthropic`) |
-| `--api-key <key>` | API key override |
-| `--model <name>` | AI model override |
-| `--disable-summarization` | Save raw transcript, skip AI compression |
+```bash
+# Basic save (interactive)
+ctx save
+
+# Read transcript from stdin (for automation)
+cat session.txt | ctx save --stdin
+
+# Read from file
+ctx save --file ./transcript.txt
+
+# Silent mode (for hooks/scripts)
+ctx save --auto --stdin
+
+# Skip AI summarization
+ctx save --disable-summarization
+```
+
+**Options:**
+| Flag | Alias | Description |
+|------|-------|-------------|
+| `--stdin` | `-s` | Read transcript from stdin |
+| `--auto` | `-a` | Silent mode, no output (for hooks) |
+| `--file <path>` | `-f` | Read transcript from file |
+| `--project <name>` | `-p` | Override project name |
+| `--branch <name>` | `-b` | Override branch name |
+| `--provider <name>` | | AI provider: `anthropic`, `openai`, `gemini`, `glm`, `grok` |
+| `--api-key <key>` | | API key (or use env vars) |
+| `--model <name>` | | AI model to use |
+| `--disable-summarization` | | Save raw transcript without compression |
+
+---
 
 ### `ctx load`
 
-Load and display saved context.
+Load and display saved session context for your current project/branch.
 
-| Flag | Description |
-|------|-------------|
-| `-i, --inject` | Output as injectable preamble (for hooks) |
-| `-s, --session <id>` | Load specific session by ID |
-| `-f, --format <type>` | `raw`, `preamble`, `json` (default: `preamble`) |
-| `-p, --project <name>` | Override project name |
-| `-b, --branch <name>` | Override branch name |
-| `--max-tokens <n>` | Max tokens for output (default: `8192`) |
+```bash
+# Load latest context
+ctx load
+
+# Load specific session by ID
+ctx load --session abc123
+
+# Output as injectable preamble (for hooks)
+ctx load --inject
+
+# Output as JSON
+ctx load --format json
+
+# Override project/branch
+ctx load --project myapp --branch feature/auth
+```
+
+**Options:**
+| Flag | Alias | Description |
+|------|-------|-------------|
+| `--inject` | `-i` | Output as injectable preamble (for hooks) |
+| `--session <id>` | `-s` | Load specific session by ID |
+| `--format <type>` | `-f` | Output format: `raw`, `preamble`, `json` |
+| `--project <name>` | `-p` | Override project name |
+| `--branch <name>` | `-b` | Override branch name |
+| `--max-tokens <n>` | | Maximum tokens for output (default: 8192) |
+
+---
 
 ### `ctx list` (alias: `ctx ls`)
 
-List saved sessions.
+List all saved sessions across all projects.
 
-| Flag | Description |
-|------|-------------|
-| `-p, --project <name>` | Filter by project |
-| `-b, --branch <name>` | Filter by branch |
-| `-l, --limit <n>` | Limit results |
-| `-f, --format <type>` | `table` or `json` (default: `table`) |
+```bash
+# List all sessions
+ctx list
 
-### `ctx search <query>` (alias: `ctx grep <query>`)
+# Filter by project
+ctx list --project myapp
 
-Search across saved sessions.
+# Filter by branch
+ctx list --branch main
 
-| Flag | Description |
-|------|-------------|
-| `-p, --project <name>` | Filter by project |
-| `-b, --branch <name>` | Filter by branch |
-| `-l, --limit <n>` | Limit results |
-| `--case-sensitive` | Case-sensitive search |
+# Limit results
+ctx list --limit 10
+
+# Output as JSON
+ctx list --format json
+```
+
+**Options:**
+| Flag | Alias | Description |
+|------|-------|-------------|
+| `--project <name>` | `-p` | Filter by project name |
+| `--branch <name>` | `-b` | Filter by branch |
+| `--limit <n>` | `-l` | Limit number of results |
+| `--format <type>` | `-f` | Output format: `table`, `json` |
+
+---
+
+### `ctx search` (alias: `ctx grep`)
+
+Search across all saved sessions.
+
+```bash
+# Search for keyword
+ctx search "authentication"
+
+# Case-sensitive search
+ctx search "API" --case-sensitive
+
+# Filter by project
+ctx search "bug" --project myapp
+
+# Limit results
+ctx search "error" --limit 5
+```
+
+**Options:**
+| Flag | Alias | Description |
+|------|-------|-------------|
+| `--project <name>` | `-p` | Filter by project name |
+| `--branch <name>` | `-b` | Filter by branch |
+| `--limit <n>` | `-l` | Limit number of results |
+| `--case-sensitive` | `-c` | Enable case-sensitive search |
+
+---
 
 ### `ctx status`
 
-Show current context status.
+Show current project info and context status.
 
-| Flag | Description |
-|------|-------------|
-| `-j, --json` | Output as JSON |
+```bash
+# Show status
+ctx status
+
+# Output as JSON
+ctx status --json
+```
+
+**Options:**
+| Flag | Alias | Description |
+|------|-------|-------------|
+| `--json` | `-j` | Output as JSON |
+
+---
 
 ### `ctx clear`
 
-Clear saved sessions.
+Clear saved context with confirmation prompt.
 
-| Flag | Description |
-|------|-------------|
-| `-a, --all` | Clear all sessions for current project |
-| `-s, --session <id>` | Clear specific session by ID |
-| `-b, --branch <branch>` | Target branch (default: current) |
-| `-y, --yes` | Skip confirmation prompt |
+```bash
+# Clear current branch context
+ctx clear
+
+# Clear all sessions for current project
+ctx clear --all
+
+# Clear specific session by ID
+ctx clear --session abc123
+
+# Clear specific branch
+ctx clear --branch feature/old
+
+# Skip confirmation prompt
+ctx clear --yes
+```
+
+**Options:**
+| Flag | Alias | Description |
+|------|-------|-------------|
+| `--all` | `-a` | Clear all sessions for current project |
+| `--session <id>` | `-s` | Clear specific session by ID |
+| `--branch <name>` | `-b` | Clear context for specific branch |
+| `--yes` | `-y` | Skip confirmation prompt |
+
+---
 
 ### `ctx init`
 
-Initialize configuration.
+Initialize Context Carry configuration.
 
-| Flag | Description |
-|------|-------------|
-| `-f, --force` | Force overwrite existing config |
-| `-s, --skip-hooks` | Skip hook installation |
+```bash
+ctx init
+```
+
+**Options:**
+| Flag | Alias | Description |
+|------|-------|-------------|
+| `--force` | `-f` | Force overwrite existing configuration |
+| `--skip-hooks` | `-s` | Skip hook installation |
 
 ---
 
-## Storage Layout
+### `ctx --help`
 
-Sessions are stored locally under `~/.contextcarry/`:
+Show help for all commands.
+
+```bash
+ctx --help
+ctx save --help
+ctx load --help
+```
+
+## Environment Variables
+
+Context Carry supports multiple AI providers. Set the appropriate API key:
+
+```bash
+# Anthropic (default)
+ANTHROPIC_API_KEY=sk-ant-...
+
+# OpenAI
+OPENAI_API_KEY=sk-...
+
+# Google Gemini
+GEMINI_API_KEY=...
+
+# GLM (Zhipu AI)
+GLM_API_KEY=...
+
+# Grok (xAI)
+GROK_API_KEY=...
+```
+
+## Storage
+
+All data is stored locally in `~/.contextcarry/`:
 
 ```
 ~/.contextcarry/
-├── README.md               # Auto-generated
-├── index.md                # Session registry
-├── config.json             # User configuration
+├── README.md           # Auto-generated documentation
+├── index.md            # Session registry (YAML frontmatter)
+├── config.json         # User configuration
 └── <project>/
     └── <branch>/
-        ├── LATEST.md       # Most recent session
-        └── <id>-<ts>.md    # Archived sessions
+        ├── LATEST.md   # Most recent session
+        └── <id>-<ts>.md # Archived sessions
 ```
 
+## Workflow Examples
+
+### Daily Development
+
+```bash
+# Morning: Start working on a feature
+cd ~/projects/myapp
+git checkout feature/auth
+
+# End of day: Save your context
+ctx save
+
+# Next morning: Load context and continue
+ctx load
+# Paste the output into your AI chat
+```
+
+### Multiple Projects
+
+```bash
+# Project A
+cd ~/projects/frontend
+ctx save
+
+# Project B
+cd ~/projects/backend
+ctx save
+
+# Later: List all sessions
+ctx list
+# Filter to specific project
+ctx list --project frontend
+```
+
+### Searching History
+
+```bash
+# Find all sessions mentioning "authentication"
+ctx search "authentication"
+
+# Find bug-related sessions in a specific project
+ctx search "bug" --project myapp
+
+# Load a specific session found via search
+ctx load --session abc123
+```
+
+### Integration with Hooks (Phase 2)
+
+```bash
+# Auto-save when Claude Code stops
+# (requires Phase 2 setup)
+ctx save --auto --stdin
+
+# Auto-inject context on new chat
+# (requires Phase 2 setup)
+ctx load --inject
+```
+
+## API Provider Selection
+
+Choose your preferred AI provider for summarization:
+
+```bash
+# Use Anthropic (default)
+ctx save --provider anthropic
+
+# Use OpenAI
+ctx save --provider openai --model gpt-4o
+
+# Use Gemini
+ctx save --provider gemini --model gemini-2.5-pro
+
+# Use GLM
+ctx save --provider glm --model glm-4-plus
+
+# Use Grok
+ctx save --provider grok --model grok-beta
+```
+
+## Tips
+
+1. **Save frequently** - Run `ctx save` at natural breakpoints (end of task, before switching branches)
+2. **Use descriptive transcripts** - The better your input, the better the AI summary
+3. **Search before creating** - Check `ctx search` to see if you've solved a similar problem before
+4. **Branch awareness** - Context is tracked per branch, so switching branches loads the right context
+5. **Export for sharing** - Use `ctx load --format json` to export context for documentation
+
+## Requirements
+
+- Node.js >= 18
+- An API key for at least one supported AI provider
+
+## License
+
+MIT
+
+## Links
+
+- [GitHub Repository](https://github.com/contextcarry/contextcarry)
+- [Report Issues](https://github.com/contextcarry/contextcarry/issues)
+
 ---
 
-## AI Providers
-
-Context Carry supports multiple AI providers for session summarization.
-
-| Provider | Env Var | Default Model |
-|----------|---------|---------------|
-| `anthropic` | `ANTHROPIC_API_KEY` | `claude-sonnet-4-6` |
-| `openai` | `OPENAI_API_KEY` | `gpt-4o` |
-| `gemini` | `GEMINI_API_KEY` | `gemini-2.5-pro` |
-| `glm` | `GLM_API_KEY` | `glm-4-plus` |
-| `grok` | `GROK_API_KEY` | `grok-beta` |
-
-Set the relevant environment variable or pass `--api-key` at runtime.
-
----
-
-## Roadmap
-
-See [`apps/docs/implementation_plan.md`](./apps/docs/implementation_plan.md) for the full roadmap, including:
-
-- Claude Code Plugin (hooks, auto-save/inject)
-- MCP Server
-- VS Code Extension
-- Chrome Extension
-- Context Intelligence (semantic scoring)
-
----
-
-## Contributing
-
-1. Clone the repo and install dependencies: `pnpm install`
-2. Build all packages: `pnpm build`
-3. Link CLI for local testing: `cd apps/cli && pnpm link --global`
-4. Run `ctx --help` to verify
-
-PRs and issues welcome.
+**Built with care by the Context Carry team. Never lose context again.**
