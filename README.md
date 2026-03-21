@@ -1,159 +1,183 @@
-# Turborepo starter
+# Context Carry
 
-This Turborepo starter is maintained by the Turborepo core team.
+**Save your AI session context. Restore it anywhere.**
 
-## Using this example
+[![npm version](https://img.shields.io/npm/v/@thisisayande/contextcarry)](https://www.npmjs.com/package/@thisisayande/contextcarry)
+[![license](https://img.shields.io/npm/l/@thisisayande/contextcarry)](./LICENSE)
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
-```
+## What is Context Carry?
 
-## What's inside?
+Context Carry (`ctx`) is a CLI tool that compresses and saves your AI chat session context, then restores it as a preamble in a new conversation — so you never lose progress when a chat window resets.
 
-This Turborepo includes the following packages/apps:
+It auto-detects your project and git branch, uses AI to summarize your session, and stores everything locally in `~/.contextcarry/`.
 
-### Apps and Packages
+---
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+## Installation
 
 ```sh
-cd my-turborepo
-turbo build
+npm install -g @thisisayande/contextcarry
 ```
 
-Without global `turbo`, use your package manager:
+Or run without installing:
 
 ```sh
-cd my-turborepo
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+npx @thisisayande/contextcarry --help
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+---
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+## Quick Start
 
 ```sh
-turbo build --filter=docs
+# 1. Initialize config (sets up API key, default provider)
+ctx init
+
+# 2. Save your current session (paste or pipe transcript)
+ctx save --stdin
+
+# 3. Load context into your next chat
+ctx load
 ```
 
-Without global `turbo`:
+---
 
-```sh
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+## Commands Reference
+
+### `ctx save`
+
+Save and compress a session transcript.
+
+| Flag | Description |
+|------|-------------|
+| `-s, --stdin` | Read transcript from stdin |
+| `-a, --auto` | Silent mode (for hooks) |
+| `-f, --file <path>` | Read transcript from file |
+| `-o, --output <path>` | Custom output file path |
+| `-p, --project <name>` | Override project name |
+| `-b, --branch <name>` | Override branch name |
+| `--provider <name>` | AI provider: `anthropic`, `openai`, `gemini`, `glm`, `grok` (default: `anthropic`) |
+| `--api-key <key>` | API key override |
+| `--model <name>` | AI model override |
+| `--disable-summarization` | Save raw transcript, skip AI compression |
+
+### `ctx load`
+
+Load and display saved context.
+
+| Flag | Description |
+|------|-------------|
+| `-i, --inject` | Output as injectable preamble (for hooks) |
+| `-s, --session <id>` | Load specific session by ID |
+| `-f, --format <type>` | `raw`, `preamble`, `json` (default: `preamble`) |
+| `-p, --project <name>` | Override project name |
+| `-b, --branch <name>` | Override branch name |
+| `--max-tokens <n>` | Max tokens for output (default: `8192`) |
+
+### `ctx list` (alias: `ctx ls`)
+
+List saved sessions.
+
+| Flag | Description |
+|------|-------------|
+| `-p, --project <name>` | Filter by project |
+| `-b, --branch <name>` | Filter by branch |
+| `-l, --limit <n>` | Limit results |
+| `-f, --format <type>` | `table` or `json` (default: `table`) |
+
+### `ctx search <query>` (alias: `ctx grep <query>`)
+
+Search across saved sessions.
+
+| Flag | Description |
+|------|-------------|
+| `-p, --project <name>` | Filter by project |
+| `-b, --branch <name>` | Filter by branch |
+| `-l, --limit <n>` | Limit results |
+| `--case-sensitive` | Case-sensitive search |
+
+### `ctx status`
+
+Show current context status.
+
+| Flag | Description |
+|------|-------------|
+| `-j, --json` | Output as JSON |
+
+### `ctx clear`
+
+Clear saved sessions.
+
+| Flag | Description |
+|------|-------------|
+| `-a, --all` | Clear all sessions for current project |
+| `-s, --session <id>` | Clear specific session by ID |
+| `-b, --branch <branch>` | Target branch (default: current) |
+| `-y, --yes` | Skip confirmation prompt |
+
+### `ctx init`
+
+Initialize configuration.
+
+| Flag | Description |
+|------|-------------|
+| `-f, --force` | Force overwrite existing config |
+| `-s, --skip-hooks` | Skip hook installation |
+
+---
+
+## Storage Layout
+
+Sessions are stored locally under `~/.contextcarry/`:
+
+```
+~/.contextcarry/
+├── README.md               # Auto-generated
+├── index.md                # Session registry
+├── config.json             # User configuration
+└── <project>/
+    └── <branch>/
+        ├── LATEST.md       # Most recent session
+        └── <id>-<ts>.md    # Archived sessions
 ```
 
-### Develop
+---
 
-To develop all apps and packages, run the following command:
+## AI Providers
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+Context Carry supports multiple AI providers for session summarization.
 
-```sh
-cd my-turborepo
-turbo dev
-```
+| Provider | Env Var | Default Model |
+|----------|---------|---------------|
+| `anthropic` | `ANTHROPIC_API_KEY` | `claude-sonnet-4-6` |
+| `openai` | `OPENAI_API_KEY` | `gpt-4o` |
+| `gemini` | `GEMINI_API_KEY` | `gemini-2.5-pro` |
+| `glm` | `GLM_API_KEY` | `glm-4-plus` |
+| `grok` | `GROK_API_KEY` | `grok-beta` |
 
-Without global `turbo`, use your package manager:
+Set the relevant environment variable or pass `--api-key` at runtime.
 
-```sh
-cd my-turborepo
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+---
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## Roadmap
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+See [`apps/docs/implementation_plan.md`](./apps/docs/implementation_plan.md) for the full roadmap, including:
 
-```sh
-turbo dev --filter=web
-```
+- Claude Code Plugin (hooks, auto-save/inject)
+- MCP Server
+- VS Code Extension
+- Chrome Extension
+- Context Intelligence (semantic scoring)
 
-Without global `turbo`:
+---
 
-```sh
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+## Contributing
 
-### Remote Caching
+1. Clone the repo and install dependencies: `pnpm install`
+2. Build all packages: `pnpm build`
+3. Link CLI for local testing: `cd apps/cli && pnpm link --global`
+4. Run `ctx --help` to verify
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+PRs and issues welcome.

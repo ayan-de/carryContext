@@ -1,7 +1,7 @@
 # 🚀 Context Carry — Implementation Roadmap
 
 > Status: Phase 1 Complete ✓ | Phase 2 (In Progress)
-> Last Updated: 2026-03-20
+> Last Updated: 2026-03-21
 
 ---
 
@@ -87,8 +87,8 @@ New Claude Code chat starts
 
 | Step | Task | File(s) | Status |
 |------|------|---------|--------|
-| 2.1 | Add `--auto` flag to `ctx save` — silent mode, reads stdin | `apps/cli/src/commands/save.ts` | ⬜ |
-| 2.2 | Add `--inject` flag to `ctx load` — outputs preamble to stdout | `apps/cli/src/commands/load.ts` | ⬜ |
+| 2.1 | Add `--auto` flag to `ctx save` — silent mode, reads stdin | `apps/cli/src/commands/save.ts` | ✅ |
+| 2.2 | Add `--inject` flag to `ctx load` — outputs preamble to stdout | `apps/cli/src/commands/load.ts` | ✅ |
 | 2.3 | Create Claude Code hook config template | `.claude/settings.json` (template) | ⬜ |
 | 2.4 | Wire `Stop` hook → `ctx save --auto` | `.claude/settings.json` | ⬜ |
 | 2.5 | Wire `UserPromptSubmit` hook → `ctx load --inject` | `.claude/settings.json` | ⬜ |
@@ -96,7 +96,7 @@ New Claude Code chat starts
 | 2.7 | Build `/ctx-save` slash command for manual mid-session save | `apps/cli/src/commands/save.ts` | ⬜ |
 | 2.8 | Build `/ctx-what` slash command — show what context is loaded | `apps/cli/src/commands/status.ts` | ⬜ |
 | 2.9 | Build `/ctx-forget` slash command — clear injected context | `apps/cli/src/commands/clear.ts` | ⬜ |
-| 2.10 | Build `ctx init` command — writes hook config to `.claude/settings.json` | `apps/cli/src/commands/init.ts` | ⬜ |
+| 2.10 | Build `ctx init` command — writes hook config to `.claude/settings.json` | `apps/cli/src/commands/init.ts` | 🚧 |
 | 2.11 | Handle branch switch detection — load different LATEST.md | `packages/core/src/watcher.ts` | ⬜ |
 | 2.12 | Test: Stop hook fires → LATEST.md written | — | ⬜ |
 | 2.13 | Test: New chat → UserPromptSubmit → preamble injected | — | ⬜ |
@@ -284,13 +284,13 @@ User switches to feature/payments branch
 
 ```
 Phase 1  ████████████████████████   20/20   Core Engine + CLI ✓
-Phase 2  ░░░░░░░░░░░░░    0/13   Claude Code Plugin
-Phase 3  ░░░░░░░░░░░░     0/12   MCP Server
-Phase 4  ░░░░░░░░░░░      0/11   Editor Plugins
-Phase 5  ░░░░░░░░░░░░░░░░  0/16  Chrome Extension
-Phase 6  ░░░░░░░░░░       0/10   Context Intelligence
-Phase 7  ░░░░░░░░░░░░     0/12   Testing Suite
-Phase 8  ░░░░░░░░░░░      0/11   DevOps + CI/CD
+Phase 2  ██░░░░░░░░░░░     2/13   Claude Code Plugin (2.1, 2.2 done; 2.10 in progress)
+Phase 3  ░░░░░░░░░░░░      0/12   MCP Server
+Phase 4  ░░░░░░░░░░░       0/11   Editor Plugins
+Phase 5  ░░░░░░░░░░░░░░░░  0/16   Chrome Extension
+Phase 6  ░░░░░░░░░░        0/10   Context Intelligence
+Phase 7  ░░░░░░░░░░░░      0/12   Testing Suite
+Phase 8  ░░░░░░░░░░░       0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ████████████████████████░░░░░   20/105  steps
+Total    ████████████████████████░░░░░   22/105  steps
 ```
