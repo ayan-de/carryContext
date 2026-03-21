@@ -40,12 +40,12 @@ program.addCommand(hookCommand);
 program.addCommand(configCommand);
 
 // Bootstrap storage + auto-init on first run
-program.hook('preAction', async (thisCommand) => {
+program.hook('preAction', async (thisCommand, actionCommand) => {
   await initializeStorage(DEFAULT_STORAGE_CONFIG);
 
   // Skip auto-init for hook command (called by Claude Code non-interactively)
-  const isHookCmd = thisCommand.name() === 'hook';
-  const isInitCmd = thisCommand.name() === 'init';
+  const isHookCmd = actionCommand.name() === 'hook';
+  const isInitCmd = actionCommand.name() === 'init';
 
   if (!isHookCmd && !isInitCmd) {
     const hasConfig = await configExists(DEFAULT_STORAGE_CONFIG.dataDir);

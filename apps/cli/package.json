@@ -1,6 +1,6 @@
 {
   "name": "@thisisayande/contextcarry",
-  "version": "0.2.5",
+  "version": "0.2.7",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -17,7 +17,8 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "eslint .",
-    "test": "vitest"
+    "test": "vitest",
+    "postinstall": "node -e \"console.log('\\n  Context Carry installed!\\n  Run: ctx init\\n');\""
   },
   "dependencies": {
     "@inquirer/prompts": "^8.3.2",
