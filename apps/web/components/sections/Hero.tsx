@@ -65,7 +65,7 @@ export function Hero() {
       </div>
 
       {/* App Mockup */}
-      <div className="w-full max-w-4xl relative group mt-9 ml-20">
+      <div className="w-full max-w-4xl relative group mt-9 ml-auto mr-8">
         <div className="absolute -inset-4 bg-primary/10 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
         <AppMockup />
       </div>
