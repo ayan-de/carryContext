@@ -167,7 +167,7 @@ export const initCommand = new Command('init')
       }
 
       console.log(chalk.gray('\nNext steps:'));
-      console.log(chalk.white('  1. Set your API key:  export ANTHROPIC_API_KEY=<key>'));
+      console.log(chalk.white('  1. Set your API key:  export GLM_API_KEY=<key> && export CTX_PROVIDER=glm'));
 
       if (!options.skipHooks) {
         console.log(chalk.white('  2. Use Claude Code normally — context saves automatically on session end'));

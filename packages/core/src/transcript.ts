@@ -15,13 +15,20 @@ interface ContentBlock {
 }
 
 interface TranscriptLine {
+  type?: string;
   role?: 'user' | 'assistant';
   content?: string | ContentBlock[];
+  message?: {
+    role?: 'user' | 'assistant';
+    content?: string | ContentBlock[];
+  };
 }
 
 /**
  * Parse a Claude Code JSONL transcript file into a human-readable string
  * suitable for feeding into the AI summarizer.
+ *
+ * Claude Code wraps each entry as: { type: "user"|"assistant", message: { role, content } }
  */
 export async function parseClaudeTranscript(filePath: string): Promise<string> {
   const raw = await readFile(filePath, 'utf-8');
@@ -32,11 +39,16 @@ export async function parseClaudeTranscript(filePath: string): Promise<string> {
   for (const line of lines) {
     try {
       const parsed = JSON.parse(line) as TranscriptLine;
-      if (!parsed.role || !parsed.content) continue;
 
-      const text = extractTextFromContent(parsed.content);
+      // Claude Code format: { type: "user"|"assistant", message: { role, content } }
+      const role = parsed.message?.role ?? parsed.role;
+      const content = parsed.message?.content ?? parsed.content;
+
+      if (!role || !content || (role !== 'user' && role !== 'assistant')) continue;
+
+      const text = extractTextFromContent(content);
       if (text.trim()) {
-        messages.push({ role: parsed.role, content: text });
+        messages.push({ role, content: text });
       }
     } catch {
       // Skip malformed lines

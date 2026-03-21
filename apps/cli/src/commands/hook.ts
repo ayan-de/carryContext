@@ -14,6 +14,8 @@ import {
   initializeStorage,
   summarizeSessionFull,
   parseClaudeTranscript,
+  loadConfig,
+  getApiKey,
 } from 'contextcarry-core';
 import type { AIProviderConfig, SessionMetadata } from 'contextcarry-types';
 import { AIProvider } from 'contextcarry-types';
@@ -67,7 +69,7 @@ async function handleStop(payload: HookPayload): Promise<void> {
     gitRepo: false,
   }));
 
-  const providerConfig = getProviderConfigFromEnv();
+  const providerConfig = await getProviderConfig();
 
   // If no API key, save raw transcript without summarization
   let summary = transcript;
@@ -105,10 +107,8 @@ async function handleStop(payload: HookPayload): Promise<void> {
   await saveSession(session, DEFAULT_STORAGE_CONFIG);
 }
 
-function getProviderConfigFromEnv(): AIProviderConfig {
-  const provider = (process.env.CTX_PROVIDER || 'anthropic') as AIProvider;
-
-  const keyMap: Record<string, string> = {
+async function getProviderConfig(): Promise<AIProviderConfig> {
+  const envKeyMap: Record<string, string> = {
     anthropic: 'ANTHROPIC_API_KEY',
     openai: 'OPENAI_API_KEY',
     gemini: 'GEMINI_API_KEY',
@@ -124,9 +124,18 @@ function getProviderConfigFromEnv(): AIProviderConfig {
     grok: 'grok-beta',
   };
 
+  // Load config.json for stored keys + defaultProvider
+  const config = await loadConfig().catch(() => null);
+  const provider = (process.env.CTX_PROVIDER || config?.defaultProvider || 'anthropic') as AIProvider;
+
+  // API key: env var takes priority, then config.json
+  const apiKey =
+    process.env[envKeyMap[provider] ?? ''] ||
+    (config ? getApiKey(config, provider) : undefined);
+
   return {
     provider,
-    apiKey: process.env[keyMap[provider] ?? ''],
+    apiKey,
     model: modelMap[provider] ?? 'default',
     maxTokens: 4096,
     temperature: 0.3,
