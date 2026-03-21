@@ -25,10 +25,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "contextcarry.save",
-        "title": "Context Carry: Save Context"
-      },
-      {
         "command": "contextcarry.load",
         "title": "Context Carry: Load Context"
       },
@@ -41,8 +37,9 @@
         "title": "Context Carry: Compare Sessions"
       },
       {
-        "command": "contextcarry.refresh",
-        "title": "Context Carry: Refresh Sessions"
+        "command": "contextcarry.search",
+        "title": "Context Carry: Search Sessions",
+        "icon": "$(search)"
       }
     ],
     "viewsContainers": {
@@ -58,7 +55,8 @@
       "contextcarry": [
         {
           "id": "contextcarry.sessions",
-          "name": "Sessions"
+          "name": "Sessions",
+          "type": "webview"
         }
       ]
     },
@@ -95,6 +93,7 @@
     "publish": "vsce publish --no-dependencies"
   },
   "dependencies": {
+    "@vscode/codicons": "^0.0.45",
     "contextcarry-core": "workspace:*",
     "contextcarry-types": "workspace:*"
   },
