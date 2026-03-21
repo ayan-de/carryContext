@@ -8,7 +8,7 @@ export function Hero() {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText("npm i -g contextcarry");
+    await navigator.clipboard.writeText("npm i -g @thisisayande/contextcarry");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -51,7 +51,7 @@ export function Hero() {
           <div className="flex items-center gap-3">
             <Icon name="terminal" size="sm" className="text-primary" />
             <code className="font-mono text-sm text-primary tracking-tight">
-              npm i -g contextcarry
+              npm i -g @thisisayande/contextcarry
             </code>
           </div>
           <button
