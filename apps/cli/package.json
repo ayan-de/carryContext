@@ -1,6 +1,6 @@
 {
   "name": "@thisisayande/contextcarry",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -18,7 +18,7 @@
     "dev": "tsc --watch",
     "lint": "eslint .",
     "test": "vitest",
-    "postinstall": "node -e \"console.log('\\n  Context Carry installed!\\n  Run: ctx init\\n');\""
+    "postinstall": "node -e \"const fs=require('fs'),path=require('path'),cfg=path.join(require('os').homedir(),'.contextcarry','config.json');try{const c=JSON.parse(fs.readFileSync(cfg,'utf8'));if(c.defaultProvider)process.exit(0);}catch(e){}console.log('\\n  Context Carry installed!\\n  Run: ctx init\\n');\""
   },
   "dependencies": {
     "@inquirer/prompts": "^8.3.2",
