@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button, Icon } from "@/components/ui";
 import { AppMockup } from "./AppMockup";
-import LaserFlow from "@/components/LaserFlow";
 
 export function Hero() {
   const [copied, setCopied] = useState(false);
@@ -16,33 +15,6 @@ export function Hero() {
 
   return (
     <section className="relative px-8 pt-20 pb-32 max-w-7xl mx-auto flex flex-col items-center text-center">
-      {/* LaserFlow Background */}
-      <div
-        className="absolute -top-20 left-0 right-0 bottom-0 -z-10"
-        style={{
-          overflow: 'hidden',
-        }}
-      >
-        <LaserFlow
-          horizontalBeamOffset={0.1}
-          verticalBeamOffset={0.0}
-          color="#CF9EFF"
-          horizontalSizing={1}
-          verticalSizing={5}
-          wispDensity={1}
-          wispSpeed={15}
-          wispIntensity={5}
-          flowSpeed={0.35}
-          flowStrength={0.25}
-          fogIntensity={0.45}
-          fogScale={0.3}
-          fogFallSpeed={0.6}
-          decay={1.1}
-          falloffStart={1.2}
-        />
-      </div>
-
-      {/* Content with z-index to appear above LaserFlow */}
       <div className="relative z-10 flex flex-col items-center">
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-low ghost-border mb-8">

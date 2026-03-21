@@ -11,7 +11,7 @@ const navLinks = [
 
 export function Navbar() {
   return (
-    <nav className="fixed top-0 w-full z-50 bg-background/70 backdrop-blur-xl shadow-[0px_12px_32px_rgba(99,102,241,0.1)]">
+    <nav className="relative w-full z-50 bg-transparent">
       <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
         <div className="flex items-center gap-8">
           <Link href="/" className="text-xl font-bold tracking-tighter text-on-surface">
