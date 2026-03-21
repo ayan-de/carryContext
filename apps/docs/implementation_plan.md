@@ -1,7 +1,7 @@
 # 🚀 Context Carry — Implementation Roadmap
 
-> Status: Phase 1 Complete ✓ | Phase 2 Complete ✓ | Phase 3 (Next)
-> Last Updated: 2026-03-21
+> Status: Phase 1 Complete ✓ | Phase 2 Complete ✓ | Phase 4 In Progress | Phase 3 (Pending)
+> Last Updated: 2026-03-22
 
 ---
 
@@ -192,16 +192,16 @@ User clicks "Save Context" button
 
 | Step | Task | File(s) | Status |
 |------|------|---------|--------|
-| 4.1 | Scaffold VS Code extension project | `apps/vscode/package.json`, `apps/vscode/src/extension.ts` | ⬜ |
-| 4.2 | Build activation handler — detects workspace + branch via `@contextcarry/core` | `apps/vscode/src/activation.ts` | ⬜ |
-| 4.3 | Build status bar item — "Context: my-app/main ✓" with click actions | `apps/vscode/src/statusBar.ts` | ⬜ |
-| 4.4 | Build Session Explorer sidebar — TreeView listing all sessions for project | `apps/vscode/src/views/sessionExplorer.ts` | ⬜ |
-| 4.5 | Build session preview — click a session to view its content in a read-only editor | `apps/vscode/src/views/sessionPreview.ts` | ⬜ |
-| 4.6 | Build session diff — compare two sessions side-by-side | `apps/vscode/src/commands/diffSessions.ts` | ⬜ |
+| 4.1 | Scaffold VS Code extension project | `apps/vscode/package.json`, `apps/vscode/src/extension.ts` | ✅ |
+| 4.2 | Build activation handler — detects workspace + branch via `@contextcarry/core` | `apps/vscode/src/extension.ts` | ✅ |
+| 4.3 | Build status bar item — shows provider + model from config.json | `apps/vscode/src/statusBar.ts` | ✅ |
+| 4.4 | Build Session Explorer sidebar — TreeView: Project → Branch → Session | `apps/vscode/src/views/sessionExplorer.ts` | ✅ |
+| 4.5 | Build session preview — click a session to view its .md in editor | `apps/vscode/src/extension.ts` | ✅ |
+| 4.6 | Build session diff — compare two sessions side-by-side via QuickPick | `apps/vscode/src/extension.ts` | ✅ |
 | 4.7 | Build `Context Carry: Save` command palette command | `apps/vscode/src/commands/save.ts` | ⬜ |
-| 4.8 | Build `Context Carry: Delete Session` command with confirmation | `apps/vscode/src/commands/delete.ts` | ⬜ |
-| 4.9 | Build notification toasts — "Context saved", "Context loaded" | `apps/vscode/src/notifications.ts` | ⬜ |
-| 4.10 | Write VS Code marketplace manifest (contributes: views, commands, statusBar) | `apps/vscode/package.json` | ⬜ |
+| 4.8 | Build `Context Carry: Delete Session` command with confirmation | `apps/vscode/src/extension.ts` | ✅ |
+| 4.9 | Build notification toasts — "Context saved", "Context loaded" | `apps/vscode/src/extension.ts` | ✅ |
+| 4.10 | Write VS Code marketplace manifest (contributes: views, commands, statusBar) | `apps/vscode/package.json` | ✅ |
 | 4.11 | Test: VS Code loads → status bar shows active context | — | ⬜ |
 | 4.12 | Test: Session Explorer lists correct sessions + preview works | — | ⬜ |
 | 4.13 | Test: Diff view shows changes between two sessions | — | ⬜ |
@@ -321,11 +321,11 @@ User switches to feature/payments branch
 Phase 1  ████████████████████████   20/20   Core Engine + CLI ✓
 Phase 2  █████████████████████████  13/13   Claude Code Plugin ✓
 Phase 3  ░░░░░░░░░░░░░░░░░░ 0/18   MCP Server
-Phase 4  ░░░░░░░░░░░░░      0/13   VS Code Dashboard
+Phase 4  █████████████░░░░  8/13   VS Code Dashboard
 Phase 5  ░░░░░░░░░░░░░░░░   0/16   Chrome Extension
 Phase 6  ░░░░░░░░░░         0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░       0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░        0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ████████████████████████████░░░░░   33/113  steps
+Total    ██████████████████████████████░░░░   41/113  steps
 ```

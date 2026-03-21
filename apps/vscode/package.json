@@ -1,0 +1,107 @@
+{
+  "name": "contextcarry-vscode",
+  "displayName": "Context Carry",
+  "description": "Save and restore AI session context across chats — visual dashboard for Context Carry",
+  "version": "0.1.0",
+  "publisher": "thisisayande",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "context",
+    "ai",
+    "session",
+    "claude",
+    "chatgpt"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "contextcarry.save",
+        "title": "Context Carry: Save Context"
+      },
+      {
+        "command": "contextcarry.load",
+        "title": "Context Carry: Load Context"
+      },
+      {
+        "command": "contextcarry.delete",
+        "title": "Context Carry: Delete Session"
+      },
+      {
+        "command": "contextcarry.diff",
+        "title": "Context Carry: Compare Sessions"
+      },
+      {
+        "command": "contextcarry.refresh",
+        "title": "Context Carry: Refresh Sessions"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "contextcarry",
+          "title": "Context Carry",
+          "icon": "$(bookmark)"
+        }
+      ]
+    },
+    "views": {
+      "contextcarry": [
+        {
+          "id": "contextcarry.sessions",
+          "name": "Sessions"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "contextcarry.save",
+          "when": "view == contextcarry.sessions",
+          "group": "navigation"
+        },
+        {
+          "command": "contextcarry.refresh",
+          "when": "view == contextcarry.sessions",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "contextcarry.delete",
+          "when": "view == contextcarry.sessions"
+        },
+        {
+          "command": "contextcarry.diff",
+          "when": "view == contextcarry.sessions"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --sourcemap --banner:js=\"const import_meta_url = require('url').pathToFileURL(__filename).href;\" --define:import.meta.url=import_meta_url",
+    "dev": "pnpm build --watch",
+    "lint": "eslint .",
+    "package": "vsce package --no-dependencies",
+    "publish": "vsce publish --no-dependencies"
+  },
+  "dependencies": {
+    "contextcarry-core": "workspace:*",
+    "contextcarry-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.0",
+    "esbuild": "^0.24.0",
+    "typescript": "*"
+  }
+}
