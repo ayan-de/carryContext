@@ -14,10 +14,10 @@ export function Hero() {
   };
 
   return (
-    <section className="relative px-8 pt-20 pb-32 max-w-7xl mx-auto flex flex-col items-center text-center">
-      <div className="relative z-10 flex flex-col items-center">
+    <section className="relative px-8 pt-0 pb-32 -mt-16 max-w-7xl mx-auto flex flex-col items-start">
+      <div className="relative z-10 flex flex-col items-start">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-low ghost-border mb-8">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-low ghost-border mb-6">
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
           <span className="text-xs font-label uppercase tracking-widest text-on-surface-variant">
             v1.0.4 Terminal Velocity
@@ -25,22 +25,22 @@ export function Hero() {
         </div>
 
         {/* Headline */}
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter mb-6 bg-gradient-to-b from-on-surface to-on-surface-variant bg-clip-text text-transparent max-w-4xl">
-          The Kinetic Terminal for AI Context.
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter mb-4 text-white max-w-md">
+          The Kinetic Terminal<br />for AI Context.
         </h1>
 
         {/* Subheadline */}
-        <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl mb-10 leading-relaxed">
+        <p className="text-sm md:text-base text-white/80 max-w-xl mb-8 leading-relaxed">
           ContextCarry automatically saves and retrieves context from your coding
           sessions, so you never have to repeat yourself to an AI again.
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <Button variant="primary" size="lg">
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <Button variant="primary">
             Get Started Free
           </Button>
-          <Button variant="secondary" size="lg">
+          <Button variant="secondary">
             <Icon name="play" className="text-primary" />
             Watch the Demo
           </Button>
