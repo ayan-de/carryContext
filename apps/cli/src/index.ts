@@ -18,7 +18,8 @@ import { clearCommand } from './commands/clear.js';
 import { initCommand } from './commands/init.js';
 import { hookCommand } from './commands/hook.js';
 import { configCommand } from './commands/config.js';
-import { initializeStorage, DEFAULT_STORAGE_CONFIG } from 'contextcarry-core';
+import { initializeStorage, DEFAULT_STORAGE_CONFIG, configExists } from 'contextcarry-core';
+import { runProviderSetup } from './commands/init.js';
 
 const program = new Command();
 
@@ -38,9 +39,30 @@ program.addCommand(initCommand);
 program.addCommand(hookCommand);
 program.addCommand(configCommand);
 
-// Bootstrap storage directory on first run before any command executes
-program.hook('preAction', async () => {
+// Bootstrap storage + auto-init on first run
+program.hook('preAction', async (thisCommand) => {
   await initializeStorage(DEFAULT_STORAGE_CONFIG);
+
+  // Skip auto-init for hook command (called by Claude Code non-interactively)
+  const isHookCmd = thisCommand.name() === 'hook';
+  const isInitCmd = thisCommand.name() === 'init';
+
+  if (!isHookCmd && !isInitCmd) {
+    const hasConfig = await configExists(DEFAULT_STORAGE_CONFIG.dataDir);
+    const hasProvider = await configExists(DEFAULT_STORAGE_CONFIG.dataDir).then(async (exists) => {
+      if (!exists) return false;
+      const { loadConfig } = await import('contextcarry-core');
+      const cfg = await loadConfig(DEFAULT_STORAGE_CONFIG.dataDir);
+      return !!cfg.defaultProvider;
+    });
+
+    if (!hasProvider) {
+      console.log(chalk.bold('\nWelcome to Context Carry!'));
+      console.log(chalk.gray('First-time setup — this only runs once.\n'));
+      await runProviderSetup();
+      console.log('');
+    }
+  }
 });
 
 // Handle uncaught errors

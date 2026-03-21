@@ -1,6 +1,6 @@
 {
   "name": "@thisisayande/contextcarry",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,10 +20,11 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@inquirer/prompts": "^8.3.2",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
     "contextcarry-core": "workspace:*",
     "contextcarry-types": "workspace:*",
-    "commander": "^13.1.0",
-    "chalk": "^5.4.1",
     "ora": "^9.2.0"
   },
   "devDependencies": {

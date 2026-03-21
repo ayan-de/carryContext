@@ -8,13 +8,23 @@ import { join } from 'node:path';
 import { homedir } from 'node:os';
 import chalk from 'chalk';
 import ora from 'ora';
+import { select, password } from '@inquirer/prompts';
 import {
   initializeStorage,
   DEFAULT_STORAGE_CONFIG,
   saveConfig,
+  loadConfig,
   DEFAULT_CONFIG,
   configExists,
 } from 'contextcarry-core';
+
+const PROVIDER_META: Record<string, { label: string; model: string; envVar: string; baseUrl?: string }> = {
+  glm:       { label: 'GLM 4.5 (Zhipu AI / Z.ai)', model: 'glm-4.5', envVar: 'GLM_API_KEY', baseUrl: 'https://api.z.ai/api/coding/paas/v4/' },
+  anthropic: { label: 'Claude Sonnet (Anthropic)',  model: 'claude-sonnet-4-6', envVar: 'ANTHROPIC_API_KEY' },
+  openai:    { label: 'GPT-4o (OpenAI)',            model: 'gpt-4o', envVar: 'OPENAI_API_KEY' },
+  gemini:    { label: 'Gemini 2.5 Pro (Google)',    model: 'gemini-2.5-pro', envVar: 'GOOGLE_API_KEY' },
+  grok:      { label: 'Grok (xAI)',                 model: 'grok-beta', envVar: 'GROK_API_KEY' },
+};
 
 // ============================================================================
 // Slash command templates
@@ -126,6 +136,43 @@ async function installHookConfig(): Promise<void> {
 }
 
 // ============================================================================
+// Provider setup (shared between init command and first-run auto-init)
+// ============================================================================
+
+export async function runProviderSetup(): Promise<void> {
+  console.log(chalk.bold('\n🔧 Set up your AI provider\n'));
+
+  const providerKey = await select({
+    message: 'Select AI provider for session summarization:',
+    choices: Object.entries(PROVIDER_META).map(([value, meta]) => ({
+      value,
+      name: meta.label,
+    })),
+  });
+
+  const meta = PROVIDER_META[providerKey]!;
+
+  console.log(chalk.gray(`\nPaste your ${chalk.white(meta.label)} API key:`));
+  console.log(chalk.gray(`(Stored securely in ~/.contextcarry/config.json)\n`));
+
+  const apiKey = await password({
+    message: `${meta.envVar}:`,
+    mask: '*',
+  });
+
+  const config = await loadConfig(DEFAULT_STORAGE_CONFIG.dataDir);
+  config.defaultProvider = providerKey as typeof config.defaultProvider;
+  (config as unknown as Record<string, unknown>)[providerKey] = {
+    apiKey,
+    model: meta.model,
+    ...(meta.baseUrl && { baseUrl: meta.baseUrl }),
+  };
+  await saveConfig(config);
+
+  console.log(chalk.green(`\n✔ Provider set to ${chalk.bold(meta.label)}`));
+}
+
+// ============================================================================
 // Command
 // ============================================================================
 
@@ -142,9 +189,7 @@ export const initCommand = new Command('init')
 
       // 2. Write config.json (skip if exists unless --force)
       const alreadyExists = await configExists(DEFAULT_STORAGE_CONFIG.dataDir);
-      if (alreadyExists && !options.force) {
-        spinner.warn(chalk.yellow('Config already exists. Use --force to overwrite.'));
-      } else {
+      if (!alreadyExists || options.force) {
         await saveConfig(DEFAULT_CONFIG);
       }
 
@@ -157,9 +202,18 @@ export const initCommand = new Command('init')
         await installSlashCommands(options.force ?? false);
       }
 
-      spinner.succeed(chalk.green('Context Carry initialized'));
+      spinner.stop();
 
+      // 4. Interactive provider setup
+      await runProviderSetup();
+
+      console.log(chalk.green('\n✔ Context Carry initialized'));
       console.log(chalk.gray('\nStorage:      ') + chalk.white(DEFAULT_STORAGE_CONFIG.dataDir));
+      const cfg = await loadConfig(DEFAULT_STORAGE_CONFIG.dataDir);
+      const activeMeta = cfg.defaultProvider ? PROVIDER_META[cfg.defaultProvider] : undefined;
+      if (activeMeta) {
+        console.log(chalk.gray('Provider:     ') + chalk.white(`${activeMeta.label} (${activeMeta.model})`));
+      }
 
       if (!options.skipHooks) {
         console.log(chalk.gray('Hooks:        ') + chalk.white('~/.claude/settings.json (Stop → ctx hook)'));
@@ -167,15 +221,13 @@ export const initCommand = new Command('init')
       }
 
       console.log(chalk.gray('\nNext steps:'));
-      console.log(chalk.white('  1. Set your API key:  export GLM_API_KEY=<key> && export CTX_PROVIDER=glm'));
-
       if (!options.skipHooks) {
-        console.log(chalk.white('  2. Use Claude Code normally — context saves automatically on session end'));
-        console.log(chalk.white('  3. In a new session:  /ctx-load  to restore context'));
-        console.log(chalk.white('  4. Mid-session:       /ctx-save  to save manually'));
+        console.log(chalk.white('  1. Use Claude Code normally — context saves automatically on session end'));
+        console.log(chalk.white('  2. In a new session:  /ctx-load  to restore context'));
+        console.log(chalk.white('  3. Mid-session:       /ctx-save  to save manually'));
       } else {
-        console.log(chalk.white('  2. Save context:      ctx save --stdin'));
-        console.log(chalk.white('  3. Load context:      ctx load'));
+        console.log(chalk.white('  1. Save context:      ctx save --stdin'));
+        console.log(chalk.white('  2. Load context:      ctx load'));
       }
     } catch (error) {
       spinner.fail(chalk.red(`Failed to initialize: ${error}`));
