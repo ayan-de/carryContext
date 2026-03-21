@@ -1,4 +1,4 @@
-# contextcarry
+# @thisisayande/contextcarry
 
 > Never lose context across AI chat sessions. Save, restore, and search your conversation history.
 
@@ -8,10 +8,10 @@
 
 ```bash
 # Install globally
-npm install -g contextcarry
+npm install -g @thisisayande/contextcarry
 
 # Or use with npx (no install required)
-npx contextcarry --help
+npx @thisisayande/contextcarry --help
 ```
 
 ```bash
@@ -37,17 +37,17 @@ ctx status
 
 ### npm
 ```bash
-npm install -g contextcarry
+npm install -g @thisisayande/contextcarry
 ```
 
 ### pnpm
 ```bash
-pnpm add -g contextcarry
+pnpm add -g @thisisayande/contextcarry
 ```
 
 ### yarn
 ```bash
-yarn global add contextcarry
+yarn global add @thisisayande/contextcarry
 ```
 
 ## Commands

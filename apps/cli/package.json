@@ -1,5 +1,5 @@
 {
-  "name": "contextcarry",
+  "name": "@thisisayande/contextcarry",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
