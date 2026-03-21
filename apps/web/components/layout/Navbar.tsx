@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui";
+import ShinyText from "../ShinyText";
 
 const navLinks = [
   { href: "#features", label: "Features" },
@@ -15,7 +16,18 @@ export function Navbar() {
       <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
         <div className="flex items-center gap-8">
           <Link href="/" className="text-xl font-bold tracking-tighter text-on-surface">
-            ContextCarry
+            <ShinyText
+              text="✨ ContextCarry"
+              speed={2}
+              delay={0}
+              color="#b5b5b5"
+              shineColor="#ffffff"
+              spread={120}
+              direction="left"
+              yoyo={false}
+              pauseOnHover={false}
+              disabled={false}
+            />
           </Link>
           <div className="hidden md:flex gap-6 items-center">
             {navLinks.map((link) => (
