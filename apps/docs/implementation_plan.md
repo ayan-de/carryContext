@@ -105,38 +105,65 @@ New Claude Code chat starts
 
 ## Phase 3: MCP Server (Weeks 5-6)
 
-**Goal**: Any MCP-capable editor (Cursor, Windsurf, Zed) connects with a single config line and gets full context carry.
+**Goal**: Any MCP-capable editor (Cursor, Windsurf, Cline, Zed, Continue, Roo Code) connects with a single config line and gets full context carry. One server, every agent.
+
+**Transport**: stdio (standard for local MCP servers — editor spawns the process, communicates via stdin/stdout)
+
+**SDK**: `@modelcontextprotocol/sdk`
+
+**Project Resolution**: Every tool accepts an optional `cwd` parameter. If provided, the server uses it to detect project name + git branch via `watcher.ts`. If omitted, falls back to `process.cwd()` (works when the editor spawns the server with a `cwd` config).
 
 ```
-Cursor opens project
-  → mcp config loads contextcarry server
-    → MCP handshake
+Editor opens project
+  → mcp config spawns contextcarry server (stdio transport)
+    → MCP handshake over stdin/stdout
 
-User opens new chat in Cursor
-  → Cursor calls load_context MCP tool
-    → MCP server reads LATEST.md
-      → returns context string to Cursor
-        → Cursor prepends to LLM prompt. Done.
+Agent calls load_context({ cwd: "/path/to/project" })
+  → watcher.ts detects project + branch from cwd
+    → storage.ts reads LATEST.md
+      → returns context string to agent
+        → agent sees full project history. Done.
 
-Session ends in Cursor
-  → Cursor calls save_context MCP tool with summary
-    → MCP server writes LATEST.md
+Agent calls save_context({ cwd: "/path/to/project", transcript: "..." })
+  → watcher.ts detects project + branch from cwd
+    → summariser.ts compresses transcript via AI provider
+      → storage.ts writes LATEST.md + archive
+        → context saved. Done.
+```
+
+**Editor config example (universal)**:
+```json
+{
+  "mcpServers": {
+    "contextcarry": {
+      "command": "npx",
+      "args": ["contextcarry-mcp"],
+      "cwd": "/path/to/project"
+    }
+  }
+}
 ```
 
 | Step | Task | File(s) | Status |
 |------|------|---------|--------|
-| 3.1 | Scaffold `apps/mcp` with MCP SDK | `apps/mcp/package.json`, `apps/mcp/src/index.ts` | ⬜ |
-| 3.2 | Implement `save_context` MCP tool | `apps/mcp/src/tools/save.ts` | ⬜ |
-| 3.3 | Implement `load_context` MCP tool | `apps/mcp/src/tools/load.ts` | ⬜ |
-| 3.4 | Implement `list_sessions` MCP tool | `apps/mcp/src/tools/list.ts` | ⬜ |
-| 3.5 | Implement `search_context` MCP tool | `apps/mcp/src/tools/search.ts` | ⬜ |
-| 3.6 | Implement `get_status` MCP tool | `apps/mcp/src/tools/status.ts` | ⬜ |
-| 3.7 | Add `ctx mcp` command to start MCP server | `apps/cli/src/commands/mcp.ts` | ⬜ |
-| 3.8 | Write Cursor integration config template | `docs/integrations/cursor.md` | ⬜ |
-| 3.9 | Write Windsurf integration config template | `docs/integrations/windsurf.md` | ⬜ |
-| 3.10 | Write Zed integration config template | `docs/integrations/zed.md` | ⬜ |
-| 3.11 | Test: Cursor connects → load_context returns LATEST.md | — | ⬜ |
-| 3.12 | Test: Cursor save_context → LATEST.md written correctly | — | ⬜ |
+| 3.1 | Scaffold `apps/mcp` with `@modelcontextprotocol/sdk`, stdio transport | `apps/mcp/package.json`, `apps/mcp/tsconfig.json`, `apps/mcp/src/index.ts` | ⬜ |
+| 3.2 | Define `cwd` param contract — all tools accept optional `cwd`, fallback to `process.cwd()` | `apps/mcp/src/utils/resolve-project.ts` | ⬜ |
+| 3.3 | Implement `save_context` MCP tool — accepts raw transcript, runs AI summarisation | `apps/mcp/src/tools/save.ts` | ⬜ |
+| 3.4 | Implement `load_context` MCP tool — returns LATEST.md formatted as preamble | `apps/mcp/src/tools/load.ts` | ⬜ |
+| 3.5 | Implement `list_sessions` MCP tool — returns sessions for project/branch | `apps/mcp/src/tools/list.ts` | ⬜ |
+| 3.6 | Implement `search_context` MCP tool — grep across all sessions | `apps/mcp/src/tools/search.ts` | ⬜ |
+| 3.7 | Implement `get_status` MCP tool — active project, branch, last saved timestamp | `apps/mcp/src/tools/status.ts` | ⬜ |
+| 3.8 | Add `ctx mcp` CLI command to start MCP server (stdio) | `apps/cli/src/commands/mcp.ts` | ⬜ |
+| 3.9 | Add `contextcarry-mcp` standalone bin entry for `npx` invocation | `apps/mcp/package.json` (bin field) | ⬜ |
+| 3.10 | Write Cursor integration config template | `docs/integrations/cursor.md` | ⬜ |
+| 3.11 | Write Windsurf integration config template | `docs/integrations/windsurf.md` | ⬜ |
+| 3.12 | Write Cline integration config template | `docs/integrations/cline.md` | ⬜ |
+| 3.13 | Write Zed integration config template | `docs/integrations/zed.md` | ⬜ |
+| 3.14 | Test: editor connects via stdio → MCP handshake succeeds | — | ⬜ |
+| 3.15 | Test: `load_context` returns LATEST.md content correctly | — | ⬜ |
+| 3.16 | Test: `load_context` returns graceful empty response when no context exists | — | ⬜ |
+| 3.17 | Test: `save_context` with transcript → LATEST.md written + summarised | — | ⬜ |
+| 3.18 | Test: `search_context` returns matching sessions | — | ⬜ |
 
 ---
 
@@ -285,12 +312,12 @@ User switches to feature/payments branch
 ```
 Phase 1  ████████████████████████   20/20   Core Engine + CLI ✓
 Phase 2  █████████████████████████  13/13   Claude Code Plugin ✓
-Phase 3  ░░░░░░░░░░░░       0/12   MCP Server
+Phase 3  ░░░░░░░░░░░░░░░░░░ 0/18   MCP Server
 Phase 4  ░░░░░░░░░░░        0/11   Editor Plugins
 Phase 5  ░░░░░░░░░░░░░░░░   0/16   Chrome Extension
 Phase 6  ░░░░░░░░░░         0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░       0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░        0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ████████████████████████████░░░░░   33/105  steps
+Total    ████████████████████████████░░░░░   33/111  steps
 ```
