@@ -15,6 +15,7 @@ import {
   saveSession,
   initializeStorage,
   summarizeSession,
+  summarizeSessionFull,
 } from 'contextcarry-core';
 import type { AIProviderConfig, SessionMetadata } from 'contextcarry-types';
 import { AIProvider } from 'contextcarry-types';
@@ -313,48 +314,3 @@ Next steps:
 `;
 }
 
-/**
- * Full summarization with additional details
- */
-async function summarizeSessionFull(
-  transcript: string,
-  config: AIProviderConfig
-): Promise<{
-  summary: any;
-  compressed: string;
-  tokensUsed: number;
-  model: string;
-  provider: string;
-}> {
-  // This would use the actual provider in production
-  // For now, return a mock result
-  return {
-    summary: {
-      mainTopic: 'User authentication system implementation',
-      keyDecisions: [
-        'Use JWT tokens for session management',
-        'Implement email verification',
-        'Add password reset functionality',
-      ],
-      filesWorkedOn: [
-        'src/auth/user.model.ts',
-        'src/auth/auth.controller.ts',
-        'src/middleware/auth.middleware.ts',
-      ],
-      openQuestions: [
-        'Should we add OAuth providers next?',
-        'How to handle rate limiting?',
-      ],
-      nextSteps: [
-        'Add role-based access control',
-        'Implement OAuth providers',
-        'Add two-factor authentication',
-        'Create admin dashboard',
-      ],
-    },
-    compressed: 'Implemented user authentication system with registration, email verification, and password reset. Created database schema and authentication endpoints. Next: RBAC, OAuth, 2FA, admin dashboard.',
-    tokensUsed: 1250,
-    model: config.model || 'default',
-    provider: config.provider,
-  };
-}
