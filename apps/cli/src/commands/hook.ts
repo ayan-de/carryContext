@@ -120,7 +120,7 @@ function getProviderConfigFromEnv(): AIProviderConfig {
     anthropic: 'claude-sonnet-4-6',
     openai: 'gpt-4o',
     gemini: 'gemini-2.5-pro',
-    glm: 'glm-4-plus',
+    glm: 'glm-4.5',
     grok: 'grok-beta',
   };
 
