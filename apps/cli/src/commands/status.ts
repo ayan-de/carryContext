@@ -10,8 +10,8 @@ import {
   loadSession,
   loadRegistry,
   DEFAULT_STORAGE_CONFIG,
-} from '@contextcarry/core';
-import { formatStatusMessage } from '@contextcarry/core';
+} from 'contextcarry-core';
+import { formatStatusMessage } from 'contextcarry-core';
 
 export const statusCommand = new Command('status')
   .description('Show active project and context status')

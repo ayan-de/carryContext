@@ -4,7 +4,7 @@
 
 import OpenAI from 'openai';
 import type { IProvider, SummarizationResult } from '../interfaces/provider.js';
-import type { AIProviderConfig, SessionSummary } from '@contextcarry/types';
+import type { AIProviderConfig, SessionSummary } from 'contextcarry-types';
 
 export class OpenAIProvider implements IProvider {
   private client: OpenAI;

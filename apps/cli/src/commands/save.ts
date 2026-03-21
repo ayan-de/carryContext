@@ -15,9 +15,9 @@ import {
   saveSession,
   initializeStorage,
   summarizeSession,
-} from '@contextcarry/core';
-import type { AIProviderConfig, SessionMetadata } from '@contextcarry/types';
-import { AIProvider } from '@contextcarry/types';
+} from 'contextcarry-core';
+import type { AIProviderConfig, SessionMetadata } from 'contextcarry-types';
+import { AIProvider } from 'contextcarry-types';
 
 interface SaveOptions {
   stdin?: boolean;
@@ -142,7 +142,7 @@ export const saveCommand = new Command('save')
       // Save session
       if (options.output) {
         // Save to specified output file
-        const { writeContextFile } = await import('@contextcarry/core');
+        const { writeContextFile } = await import('contextcarry-core');
         await writeContextFile(options.output, session.summary, {
           sessionId: session.id,
           projectName: session.projectName,

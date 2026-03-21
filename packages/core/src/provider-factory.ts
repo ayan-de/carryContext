@@ -7,7 +7,7 @@
  * - SRP: Each concern is separated (registry, factory, adapter)
  */
 
-import { AIProvider, type AIProviderConfig } from '@contextcarry/types';
+import { AIProvider, type AIProviderConfig } from 'contextcarry-types';
 import type { IProvider } from './interfaces/provider.js';
 import { AnthropicProvider } from './providers/anthropic-provider.js';
 import { OpenAIProvider } from './providers/openai-provider.js';

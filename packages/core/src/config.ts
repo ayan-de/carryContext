@@ -12,8 +12,8 @@ import type {
   ScorerConfig,
   ScoringWeights,
   AIProvider,
-} from '@contextcarry/types';
-import { ContextCarryError, ErrorCode } from '@contextcarry/types';
+} from 'contextcarry-types';
+import { ContextCarryError, ErrorCode } from 'contextcarry-types';
 
 // ============================================================================
 // Constants

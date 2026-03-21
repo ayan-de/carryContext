@@ -7,8 +7,8 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 import type { IProvider, SummarizationResult } from '../interfaces/provider.js';
-import type { AIProviderConfig, SessionSummary } from '@contextcarry/types';
-import { AIProvider } from '@contextcarry/types';
+import type { AIProviderConfig, SessionSummary } from 'contextcarry-types';
+import { AIProvider } from 'contextcarry-types';
 
 export class AnthropicProvider implements IProvider {
   private client: Anthropic;

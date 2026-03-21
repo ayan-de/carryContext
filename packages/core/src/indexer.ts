@@ -2,7 +2,7 @@
  * Indexer Module - Build and search keyword index
  */
 
-import type { SearchIndex, IndexEntry } from '@contextcarry/types';
+import type { SearchIndex, IndexEntry } from 'contextcarry-types';
 
 export async function buildIndex(sessions: any[]): Promise<SearchIndex> {
   // TODO: Implement index building

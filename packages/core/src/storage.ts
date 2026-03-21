@@ -16,7 +16,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import grayMatter from 'gray-matter';
-import type { Session, ContextFile, SessionRegistry, StorageConfig, RegistryEntry } from '@contextcarry/types';
+import type { Session, ContextFile, SessionRegistry, StorageConfig, RegistryEntry } from 'contextcarry-types';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

@@ -16,7 +16,7 @@ import { searchCommand } from './commands/search.js';
 import { statusCommand } from './commands/status.js';
 import { clearCommand } from './commands/clear.js';
 import { initCommand } from './commands/init.js';
-import { initializeStorage, DEFAULT_STORAGE_CONFIG } from '@contextcarry/core';
+import { initializeStorage, DEFAULT_STORAGE_CONFIG } from 'contextcarry-core';
 
 const program = new Command();
 

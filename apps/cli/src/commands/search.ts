@@ -5,8 +5,8 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
-import { loadRegistry, DEFAULT_STORAGE_CONFIG } from '@contextcarry/core';
-import type { SearchOptions } from '@contextcarry/types';
+import { loadRegistry, DEFAULT_STORAGE_CONFIG } from 'contextcarry-core';
+import type { SearchOptions } from 'contextcarry-types';
 
 interface SearchCommandOptions {
   project?: string;

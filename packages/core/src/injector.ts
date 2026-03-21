@@ -5,7 +5,7 @@
  * injected into AI chats for continuity across sessions.
  */
 
-import type { Session, SessionSummary, ContextFile } from '@contextcarry/types';
+import type { Session, SessionSummary, ContextFile } from 'contextcarry-types';
 
 /**
  * Format options for preamble generation

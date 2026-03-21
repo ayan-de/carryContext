@@ -4,7 +4,7 @@
 
 import axios from 'axios';
 import type { IProvider, SummarizationResult } from '../interfaces/provider.js';
-import type { AIProviderConfig, SessionSummary } from '@contextcarry/types';
+import type { AIProviderConfig, SessionSummary } from 'contextcarry-types';
 
 export class GLMProvider implements IProvider {
   private config: AIProviderConfig;

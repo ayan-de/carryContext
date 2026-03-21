@@ -4,7 +4,7 @@
  * DIP: High-level modules depend on this interface, not concrete implementations
  */
 
-import type { SessionSummary } from '@contextcarry/types';
+import type { SessionSummary } from 'contextcarry-types';
 
 /**
  * Summarization result with metadata

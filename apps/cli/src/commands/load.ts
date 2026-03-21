@@ -10,8 +10,8 @@ import {
   loadSession,
   loadSessionById,
   DEFAULT_STORAGE_CONFIG,
-} from '@contextcarry/core';
-import { formatPreamble } from '@contextcarry/core';
+} from 'contextcarry-core';
+import { formatPreamble } from 'contextcarry-core';
 
 interface LoadCommandOptions {
   inject?: boolean;

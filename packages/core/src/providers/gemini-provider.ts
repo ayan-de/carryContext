@@ -4,7 +4,7 @@
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { IProvider, SummarizationResult } from '../interfaces/provider.js';
-import type { AIProviderConfig, SessionSummary } from '@contextcarry/types';
+import type { AIProviderConfig, SessionSummary } from 'contextcarry-types';
 
 export class GeminiProvider implements IProvider {
   private client: GoogleGenerativeAI;

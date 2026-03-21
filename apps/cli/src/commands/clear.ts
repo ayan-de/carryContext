@@ -14,7 +14,7 @@ import {
   deleteSession,
   writeContextFile,
   DEFAULT_STORAGE_CONFIG,
-} from '@contextcarry/core';
+} from 'contextcarry-core';
 import { join } from 'node:path';
 import { readdir, rm } from 'node:fs/promises';
 

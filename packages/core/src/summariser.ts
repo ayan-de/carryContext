@@ -6,7 +6,7 @@
  * Uses provider factory pattern for extensibility
  */
 
-import type { SessionSummary, AIProvider, AIProviderConfig } from '@contextcarry/types';
+import type { SessionSummary, AIProvider, AIProviderConfig } from 'contextcarry-types';
 import { createProvider } from './provider-factory.js';
 
 /**

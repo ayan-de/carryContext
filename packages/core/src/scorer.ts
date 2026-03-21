@@ -11,7 +11,7 @@ import type {
   RelevanceFactors,
   ScoringWeights,
   ProjectInfo,
-} from '@contextcarry/types';
+} from 'contextcarry-types';
 
 /**
  * Scoring context - information about the current state
