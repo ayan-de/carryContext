@@ -23,6 +23,7 @@ export interface SessionMetadata {
   toolsUsed?: string[];
   filesModified?: string[];
   lastCommand?: string;
+  claudeSessionId?: string;
 }
 
 export interface SessionSummary {

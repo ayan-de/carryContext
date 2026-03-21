@@ -21,6 +21,7 @@ export * from './injector.js';
 export * from './scorer.js';
 export * from './config.js';
 export * from './indexer.js';
+export * from './transcript.js';
 export * from './provider-factory.js';
 
 // Export provider interface and implementations

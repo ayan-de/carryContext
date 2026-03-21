@@ -16,6 +16,7 @@ import { searchCommand } from './commands/search.js';
 import { statusCommand } from './commands/status.js';
 import { clearCommand } from './commands/clear.js';
 import { initCommand } from './commands/init.js';
+import { hookCommand } from './commands/hook.js';
 import { initializeStorage, DEFAULT_STORAGE_CONFIG } from 'contextcarry-core';
 
 const program = new Command();
@@ -33,6 +34,7 @@ program.addCommand(searchCommand);
 program.addCommand(statusCommand);
 program.addCommand(clearCommand);
 program.addCommand(initCommand);
+program.addCommand(hookCommand);
 
 // Bootstrap storage directory on first run before any command executes
 program.hook('preAction', async () => {
