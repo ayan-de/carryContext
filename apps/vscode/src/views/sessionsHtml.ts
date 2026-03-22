@@ -2,8 +2,9 @@ import type * as vscode from 'vscode';
 
 export function getSessionsHtml(csp: string, codiconUri: vscode.Uri, nonce: string): string {
   return /*html*/ `<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="${csp}">
 <link rel="stylesheet" href="${codiconUri}" />
 <style>

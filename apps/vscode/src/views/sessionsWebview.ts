@@ -212,13 +212,13 @@ export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
 
   private _getHtml(codiconUri: vscode.Uri): string {
     const nonce = getNonce();
+    const wv = this._view!.webview;
     const csp = [
       `default-src 'none'`,
-      `style-src ${this._view!.webview.cspSource} 'unsafe-inline'`,
-      `font-src ${this._view!.webview.cspSource}`,
+      `style-src ${wv.cspSource} 'unsafe-inline'`,
+      `font-src ${wv.cspSource}`,
       `script-src 'nonce-${nonce}'`,
     ].join('; ');
-
     return getSessionsHtml(csp, codiconUri, nonce);
   }
 }
