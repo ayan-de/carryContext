@@ -161,11 +161,11 @@ Agent calls save_context({ cwd: "/path/to/project", transcript: "..." })
 | 3.11 | Add `ctx mcp` CLI command to start MCP server (delegates to `apps/mcp` entry point) | `apps/cli/src/commands/mcp.ts` | ✅ |
 | 3.12 | Add `contextcarry-mcp` standalone bin entry for `npx` invocation | `apps/mcp/package.json` (bin field) | ✅ |
 | 3.13 | Write Cursor integration config template | `docs/integrations/cursor.md` | ✅ |
-| 3.14 | Write Windsurf integration config template | `docs/integrations/windsurf.md` | ⬜ |
-| 3.15 | Write Cline integration config template | `docs/integrations/cline.md` | ⬜ |
-| 3.16 | Write Zed integration config template | `docs/integrations/zed.md` | ⬜ |
-| 3.17 | Write Continue integration config template | `docs/integrations/continue.md` | ⬜ |
-| 3.18 | Write Roo Code integration config template | `docs/integrations/roo-code.md` | ⬜ |
+| 3.14 | Write Windsurf integration config template | `docs/integrations/windsurf.md` | ✅ |
+| 3.15 | Write Cline integration config template | `docs/integrations/cline.md` | ✅ |
+| 3.16 | Write Zed integration config template | `docs/integrations/zed.md` | ✅ |
+| 3.17 | Write Continue integration config template | `docs/integrations/continue.md` | ✅ |
+| 3.18 | Write Roo Code integration config template | `docs/integrations/roo-code.md` | ✅ |
 | 3.19 | Test: editor connects via stdio → MCP handshake succeeds | — | ⬜ |
 | 3.20 | Test: `load_context` returns LATEST.md content correctly | — | ⬜ |
 | 3.21 | Test: `load_context` returns graceful empty response when no context exists | — | ⬜ |
@@ -329,12 +329,12 @@ User switches to feature/payments branch
 ```
 Phase 1  ████████████████████████   20/20   Core Engine + CLI ✓
 Phase 2  █████████████████████████  13/13   Claude Code Plugin ✓
-Phase 3  █████████░░░░░░░░░ 13/25  MCP Server
+Phase 3  ████████████░░░░░░ 18/25  MCP Server
 Phase 4  █████████████░░░░  8/13   VS Code Dashboard
 Phase 5  ░░░░░░░░░░░░░░░░   0/16   Chrome Extension
 Phase 6  ░░░░░░░░░░         0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░       0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░        0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ██████████████████████████████░░░░   54/120  steps
+Total    ██████████████████████████████░░░░   59/120  steps
 ```
