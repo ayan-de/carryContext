@@ -21,6 +21,7 @@
   "activationEvents": [
     "onStartupFinished"
   ],
+  "icon": "icon.png",
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -35,6 +36,14 @@
       {
         "command": "contextcarry.diff",
         "title": "Context Carry: Compare Sessions"
+      },
+      {
+        "command": "contextcarry.save",
+        "title": "Context Carry: Save Current Session"
+      },
+      {
+        "command": "contextcarry.refresh",
+        "title": "Context Carry: Refresh Sessions"
       },
       {
         "command": "contextcarry.search",

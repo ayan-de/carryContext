@@ -198,9 +198,18 @@ export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
   }
 
   private _getHtml(codiconUri: vscode.Uri): string {
+    const nonce = getNonce();
+    const csp = [
+      `default-src 'none'`,
+      `style-src ${this._view!.webview.cspSource} 'unsafe-inline'`,
+      `font-src ${this._view!.webview.cspSource}`,
+      `script-src 'nonce-${nonce}'`,
+    ].join('; ');
+
     return /*html*/ `<!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Content-Security-Policy" content="${csp}">
 <link rel="stylesheet" href="${codiconUri}" />
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -412,7 +421,7 @@ export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
     <button class="btn-change" id="changeBtn">Change</button>
   </div>
 
-  <script>
+  <script nonce="${nonce}">
     const vscode = acquireVsCodeApi();
     const input = document.getElementById('search');
     const treeDiv = document.getElementById('tree');
@@ -531,6 +540,15 @@ export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
 </body>
 </html>`;
   }
+}
+
+function getNonce(): string {
+  let text = '';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < 32; i++) {
+    text += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return text;
 }
 
 interface SessionNode {

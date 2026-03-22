@@ -6,7 +6,13 @@
       "type": "shell",
       "command": "pnpm build",
       "group": "build",
-      "problemMatcher": []
+      "problemMatcher": [],
+      "options": {
+        "shell": {
+          "executable": "/usr/bin/bash",
+          "args": ["-l", "-c"]
+        }
+      }
     }
   ]
 }
