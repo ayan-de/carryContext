@@ -152,12 +152,12 @@ Agent calls save_context({ cwd: "/path/to/project", transcript: "..." })
 | 3.2 | Define `cwd` param contract — all tools accept optional `cwd`, fallback to `process.cwd()` | `apps/mcp/src/utils/resolve-project.ts` | ✅ |
 | 3.3 | Build shared error handler — maps core errors to FastMCP `UserError` responses | `apps/mcp/src/utils/error-handler.ts` | ✅ |
 | 3.4 | Implement `save_context` MCP tool — accepts raw transcript, runs AI summarisation | `apps/mcp/src/tools/save.ts` | ✅ |
-| 3.5 | Implement `load_context` MCP tool — returns LATEST.md formatted as preamble | `apps/mcp/src/tools/load.ts` | ⬜ |
-| 3.6 | Implement `list_sessions` MCP tool — returns sessions for project/branch | `apps/mcp/src/tools/list.ts` | ⬜ |
-| 3.7 | Implement `search_context` MCP tool — grep across all sessions | `apps/mcp/src/tools/search.ts` | ⬜ |
-| 3.8 | Implement `get_status` MCP tool — active project, branch, last saved timestamp | `apps/mcp/src/tools/status.ts` | ⬜ |
-| 3.9 | Implement `clear_context` MCP tool — clear saved context for project/branch with confirmation flag | `apps/mcp/src/tools/clear.ts` | ⬜ |
-| 3.10 | Implement `delete_session` MCP tool — delete a specific session by ID | `apps/mcp/src/tools/delete.ts` | ⬜ |
+| 3.5 | Implement `load_context` MCP tool — returns LATEST.md formatted as preamble | `apps/mcp/src/tools/load.ts` | ✅ |
+| 3.6 | Implement `list_sessions` MCP tool — returns sessions for project/branch | `apps/mcp/src/tools/list.ts` | ✅ |
+| 3.7 | Implement `search_context` MCP tool — grep across all sessions | `apps/mcp/src/tools/search.ts` | ✅ |
+| 3.8 | Implement `get_status` MCP tool — active project, branch, last saved timestamp | `apps/mcp/src/tools/status.ts` | ✅ |
+| 3.9 | Implement `clear_context` MCP tool — clear saved context for project/branch with confirmation flag | `apps/mcp/src/tools/clear.ts` | ✅ |
+| 3.10 | Implement `delete_session` MCP tool — delete a specific session by ID | `apps/mcp/src/tools/delete.ts` | ✅ |
 | 3.11 | Add `ctx mcp` CLI command to start MCP server (delegates to `apps/mcp` entry point) | `apps/cli/src/commands/mcp.ts` | ⬜ |
 | 3.12 | Add `contextcarry-mcp` standalone bin entry for `npx` invocation | `apps/mcp/package.json` (bin field) | ⬜ |
 | 3.13 | Write Cursor integration config template | `docs/integrations/cursor.md` | ⬜ |
@@ -329,12 +329,12 @@ User switches to feature/payments branch
 ```
 Phase 1  ████████████████████████   20/20   Core Engine + CLI ✓
 Phase 2  █████████████████████████  13/13   Claude Code Plugin ✓
-Phase 3  ███░░░░░░░░░░░░░░░ 4/25   MCP Server
+Phase 3  ███████░░░░░░░░░░░ 10/25  MCP Server
 Phase 4  █████████████░░░░  8/13   VS Code Dashboard
 Phase 5  ░░░░░░░░░░░░░░░░   0/16   Chrome Extension
 Phase 6  ░░░░░░░░░░         0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░       0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░        0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ██████████████████████████████░░░░   45/120  steps
+Total    ██████████████████████████████░░░░   51/120  steps
 ```
