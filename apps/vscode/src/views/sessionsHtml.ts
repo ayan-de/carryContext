@@ -325,6 +325,9 @@ export function getSessionsHtml(csp: string, codiconUri: vscode.Uri, nonce: stri
     const treeDiv = document.getElementById('tree');
     let debounceTimer;
 
+    // Signal the extension that the webview is ready to receive messages
+    vscode.postMessage({ type: 'ready' });
+
     document.getElementById('changeBtn').addEventListener('click', () => {
       vscode.postMessage({ type: 'changeProvider' });
     });

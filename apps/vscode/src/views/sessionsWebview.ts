@@ -38,10 +38,22 @@ export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
     );
 
     webviewView.webview.html = this._getHtml(codiconUri);
-    this._sendTree('');
-    this._sendConfig();
+
+    // Resend data when panel becomes visible again (e.g. toggling sidebar)
+    webviewView.onDidChangeVisibility(() => {
+      if (webviewView.visible) {
+        this._sendTree('');
+        this._sendConfig();
+      }
+    });
 
     webviewView.webview.onDidReceiveMessage(async (msg) => {
+      // Webview signals it's ready to receive messages
+      if (msg.type === 'ready') {
+        await this._sendTree('');
+        this._sendConfig();
+        return;
+      }
       switch (msg.type) {
         case 'search':
           await this._sendTree(msg.query);
