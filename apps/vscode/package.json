@@ -2,7 +2,7 @@
   "name": "contextcarry-vscode",
   "displayName": "Context Carry",
   "description": "Save and restore AI session context across chats — visual dashboard for Context Carry",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "ayande",
   "license": "MIT",
   "engines": {
@@ -56,7 +56,7 @@
         {
           "id": "contextcarry",
           "title": "Context Carry",
-          "icon": "$(bookmark)"
+          "icon": "media/icon.svg"
         }
       ]
     },
@@ -85,7 +85,7 @@
     }
   },
   "scripts": {
-    "build": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --sourcemap --banner:js=\"const import_meta_url = require('url').pathToFileURL(__filename).href;\" --define:import.meta.url=import_meta_url",
+    "build": "mkdir -p media && cp node_modules/@vscode/codicons/dist/codicon.css media/codicon.css && cp node_modules/@vscode/codicons/dist/codicon.ttf media/codicon.ttf && esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --sourcemap --banner:js=\"const import_meta_url = require('url').pathToFileURL(__filename).href;\" --define:import.meta.url=import_meta_url",
     "dev": "pnpm build --watch",
     "lint": "eslint .",
     "package": "vsce package --no-dependencies",

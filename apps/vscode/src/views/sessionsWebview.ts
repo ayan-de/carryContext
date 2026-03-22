@@ -34,7 +34,7 @@ export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
     };
 
     const codiconUri = webviewView.webview.asWebviewUri(
-      vscode.Uri.joinPath(this.extensionUri, 'node_modules', '@vscode', 'codicons', 'dist', 'codicon.css'),
+      vscode.Uri.joinPath(this.extensionUri, 'media', 'codicon.css'),
     );
 
     webviewView.webview.html = this._getHtml(codiconUri);
