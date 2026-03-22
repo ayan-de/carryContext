@@ -18,6 +18,7 @@ import { clearCommand } from './commands/clear.js';
 import { initCommand } from './commands/init.js';
 import { hookCommand } from './commands/hook.js';
 import { configCommand } from './commands/config.js';
+import { mcpCommand } from './commands/mcp.js';
 import { initializeStorage, DEFAULT_STORAGE_CONFIG, configExists } from 'contextcarry-core';
 import { runProviderSetup } from './commands/init.js';
 
@@ -38,6 +39,7 @@ program.addCommand(clearCommand);
 program.addCommand(initCommand);
 program.addCommand(hookCommand);
 program.addCommand(configCommand);
+program.addCommand(mcpCommand);
 
 // Bootstrap storage + auto-init on first run
 program.hook('preAction', async (thisCommand, actionCommand) => {

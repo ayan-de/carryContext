@@ -158,7 +158,7 @@ Agent calls save_context({ cwd: "/path/to/project", transcript: "..." })
 | 3.8 | Implement `get_status` MCP tool — active project, branch, last saved timestamp | `apps/mcp/src/tools/status.ts` | ✅ |
 | 3.9 | Implement `clear_context` MCP tool — clear saved context for project/branch with confirmation flag | `apps/mcp/src/tools/clear.ts` | ✅ |
 | 3.10 | Implement `delete_session` MCP tool — delete a specific session by ID | `apps/mcp/src/tools/delete.ts` | ✅ |
-| 3.11 | Add `ctx mcp` CLI command to start MCP server (delegates to `apps/mcp` entry point) | `apps/cli/src/commands/mcp.ts` | ⬜ |
+| 3.11 | Add `ctx mcp` CLI command to start MCP server (delegates to `apps/mcp` entry point) | `apps/cli/src/commands/mcp.ts` | ✅ |
 | 3.12 | Add `contextcarry-mcp` standalone bin entry for `npx` invocation | `apps/mcp/package.json` (bin field) | ⬜ |
 | 3.13 | Write Cursor integration config template | `docs/integrations/cursor.md` | ⬜ |
 | 3.14 | Write Windsurf integration config template | `docs/integrations/windsurf.md` | ⬜ |
@@ -329,12 +329,12 @@ User switches to feature/payments branch
 ```
 Phase 1  ████████████████████████   20/20   Core Engine + CLI ✓
 Phase 2  █████████████████████████  13/13   Claude Code Plugin ✓
-Phase 3  ███████░░░░░░░░░░░ 10/25  MCP Server
+Phase 3  ████████░░░░░░░░░░ 11/25  MCP Server
 Phase 4  █████████████░░░░  8/13   VS Code Dashboard
 Phase 5  ░░░░░░░░░░░░░░░░   0/16   Chrome Extension
 Phase 6  ░░░░░░░░░░         0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░       0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░        0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ██████████████████████████████░░░░   51/120  steps
+Total    ██████████████████████████████░░░░   52/120  steps
 ```
