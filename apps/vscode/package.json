@@ -71,16 +71,6 @@
     },
     "menus": {
       "view/title": [
-        {
-          "command": "contextcarry.save",
-          "when": "view == contextcarry.sessions",
-          "group": "navigation"
-        },
-        {
-          "command": "contextcarry.refresh",
-          "when": "view == contextcarry.sessions",
-          "group": "navigation"
-        }
       ],
       "view/item/context": [
         {
