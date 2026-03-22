@@ -109,7 +109,7 @@ New Claude Code chat starts
 
 **Transport**: stdio (standard for local MCP servers — editor spawns the process, communicates via stdin/stdout)
 
-**SDK**: `@modelcontextprotocol/sdk`
+**SDK**: `fastmcp` (high-level TypeScript framework over `@modelcontextprotocol/sdk` — cleaner tool definitions with Zod schemas, built-in error handling, stdio transport out of the box)
 
 **Project Resolution**: Every tool accepts an optional `cwd` parameter. If provided, the server uses it to detect project name + git branch via `watcher.ts`. If omitted, falls back to `process.cwd()` (works when the editor spawns the server with a `cwd` config).
 
@@ -144,26 +144,35 @@ Agent calls save_context({ cwd: "/path/to/project", transcript: "..." })
 }
 ```
 
+**Error Handling**: All tools return structured MCP errors for: missing API key, storage dir not bootstrapped, invalid project/branch, provider failures. Config is read via `config.ts` from `~/.contextcarry/config.json` (same path as CLI).
+
 | Step | Task | File(s) | Status |
 |------|------|---------|--------|
-| 3.1 | Scaffold `apps/mcp` with `@modelcontextprotocol/sdk`, stdio transport | `apps/mcp/package.json`, `apps/mcp/tsconfig.json`, `apps/mcp/src/index.ts` | ⬜ |
+| 3.1 | Scaffold `apps/mcp` with `fastmcp` + Zod, stdio transport | `apps/mcp/package.json`, `apps/mcp/tsconfig.json`, `apps/mcp/src/index.ts` | ⬜ |
 | 3.2 | Define `cwd` param contract — all tools accept optional `cwd`, fallback to `process.cwd()` | `apps/mcp/src/utils/resolve-project.ts` | ⬜ |
-| 3.3 | Implement `save_context` MCP tool — accepts raw transcript, runs AI summarisation | `apps/mcp/src/tools/save.ts` | ⬜ |
-| 3.4 | Implement `load_context` MCP tool — returns LATEST.md formatted as preamble | `apps/mcp/src/tools/load.ts` | ⬜ |
-| 3.5 | Implement `list_sessions` MCP tool — returns sessions for project/branch | `apps/mcp/src/tools/list.ts` | ⬜ |
-| 3.6 | Implement `search_context` MCP tool — grep across all sessions | `apps/mcp/src/tools/search.ts` | ⬜ |
-| 3.7 | Implement `get_status` MCP tool — active project, branch, last saved timestamp | `apps/mcp/src/tools/status.ts` | ⬜ |
-| 3.8 | Add `ctx mcp` CLI command to start MCP server (stdio) | `apps/cli/src/commands/mcp.ts` | ⬜ |
-| 3.9 | Add `contextcarry-mcp` standalone bin entry for `npx` invocation | `apps/mcp/package.json` (bin field) | ⬜ |
-| 3.10 | Write Cursor integration config template | `docs/integrations/cursor.md` | ⬜ |
-| 3.11 | Write Windsurf integration config template | `docs/integrations/windsurf.md` | ⬜ |
-| 3.12 | Write Cline integration config template | `docs/integrations/cline.md` | ⬜ |
-| 3.13 | Write Zed integration config template | `docs/integrations/zed.md` | ⬜ |
-| 3.14 | Test: editor connects via stdio → MCP handshake succeeds | — | ⬜ |
-| 3.15 | Test: `load_context` returns LATEST.md content correctly | — | ⬜ |
-| 3.16 | Test: `load_context` returns graceful empty response when no context exists | — | ⬜ |
-| 3.17 | Test: `save_context` with transcript → LATEST.md written + summarised | — | ⬜ |
-| 3.18 | Test: `search_context` returns matching sessions | — | ⬜ |
+| 3.3 | Build shared error handler — maps core errors to FastMCP `UserError` responses | `apps/mcp/src/utils/error-handler.ts` | ⬜ |
+| 3.4 | Implement `save_context` MCP tool — accepts raw transcript, runs AI summarisation | `apps/mcp/src/tools/save.ts` | ⬜ |
+| 3.5 | Implement `load_context` MCP tool — returns LATEST.md formatted as preamble | `apps/mcp/src/tools/load.ts` | ⬜ |
+| 3.6 | Implement `list_sessions` MCP tool — returns sessions for project/branch | `apps/mcp/src/tools/list.ts` | ⬜ |
+| 3.7 | Implement `search_context` MCP tool — grep across all sessions | `apps/mcp/src/tools/search.ts` | ⬜ |
+| 3.8 | Implement `get_status` MCP tool — active project, branch, last saved timestamp | `apps/mcp/src/tools/status.ts` | ⬜ |
+| 3.9 | Implement `clear_context` MCP tool — clear saved context for project/branch with confirmation flag | `apps/mcp/src/tools/clear.ts` | ⬜ |
+| 3.10 | Implement `delete_session` MCP tool — delete a specific session by ID | `apps/mcp/src/tools/delete.ts` | ⬜ |
+| 3.11 | Add `ctx mcp` CLI command to start MCP server (delegates to `apps/mcp` entry point) | `apps/cli/src/commands/mcp.ts` | ⬜ |
+| 3.12 | Add `contextcarry-mcp` standalone bin entry for `npx` invocation | `apps/mcp/package.json` (bin field) | ⬜ |
+| 3.13 | Write Cursor integration config template | `docs/integrations/cursor.md` | ⬜ |
+| 3.14 | Write Windsurf integration config template | `docs/integrations/windsurf.md` | ⬜ |
+| 3.15 | Write Cline integration config template | `docs/integrations/cline.md` | ⬜ |
+| 3.16 | Write Zed integration config template | `docs/integrations/zed.md` | ⬜ |
+| 3.17 | Write Continue integration config template | `docs/integrations/continue.md` | ⬜ |
+| 3.18 | Write Roo Code integration config template | `docs/integrations/roo-code.md` | ⬜ |
+| 3.19 | Test: editor connects via stdio → MCP handshake succeeds | — | ⬜ |
+| 3.20 | Test: `load_context` returns LATEST.md content correctly | — | ⬜ |
+| 3.21 | Test: `load_context` returns graceful empty response when no context exists | — | ⬜ |
+| 3.22 | Test: `save_context` with transcript → LATEST.md written + summarised | — | ⬜ |
+| 3.23 | Test: `search_context` returns matching sessions | — | ⬜ |
+| 3.24 | Test: `clear_context` removes context and returns confirmation | — | ⬜ |
+| 3.25 | Test: error responses for missing API key, invalid cwd, no sessions | — | ⬜ |
 
 ---
 
@@ -320,12 +329,12 @@ User switches to feature/payments branch
 ```
 Phase 1  ████████████████████████   20/20   Core Engine + CLI ✓
 Phase 2  █████████████████████████  13/13   Claude Code Plugin ✓
-Phase 3  ░░░░░░░░░░░░░░░░░░ 0/18   MCP Server
+Phase 3  ░░░░░░░░░░░░░░░░░░ 0/25   MCP Server
 Phase 4  █████████████░░░░  8/13   VS Code Dashboard
 Phase 5  ░░░░░░░░░░░░░░░░   0/16   Chrome Extension
 Phase 6  ░░░░░░░░░░         0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░       0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░        0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ██████████████████████████████░░░░   41/113  steps
+Total    ██████████████████████████████░░░░   41/120  steps
 ```
