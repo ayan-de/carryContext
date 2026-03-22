@@ -151,7 +151,7 @@ Agent calls save_context({ cwd: "/path/to/project", transcript: "..." })
 | 3.1 | Scaffold `apps/mcp` with `fastmcp` + Zod, stdio transport | `apps/mcp/package.json`, `apps/mcp/tsconfig.json`, `apps/mcp/src/index.ts` | ✅ |
 | 3.2 | Define `cwd` param contract — all tools accept optional `cwd`, fallback to `process.cwd()` | `apps/mcp/src/utils/resolve-project.ts` | ✅ |
 | 3.3 | Build shared error handler — maps core errors to FastMCP `UserError` responses | `apps/mcp/src/utils/error-handler.ts` | ✅ |
-| 3.4 | Implement `save_context` MCP tool — accepts raw transcript, runs AI summarisation | `apps/mcp/src/tools/save.ts` | ⬜ |
+| 3.4 | Implement `save_context` MCP tool — accepts raw transcript, runs AI summarisation | `apps/mcp/src/tools/save.ts` | ✅ |
 | 3.5 | Implement `load_context` MCP tool — returns LATEST.md formatted as preamble | `apps/mcp/src/tools/load.ts` | ⬜ |
 | 3.6 | Implement `list_sessions` MCP tool — returns sessions for project/branch | `apps/mcp/src/tools/list.ts` | ⬜ |
 | 3.7 | Implement `search_context` MCP tool — grep across all sessions | `apps/mcp/src/tools/search.ts` | ⬜ |
@@ -329,12 +329,12 @@ User switches to feature/payments branch
 ```
 Phase 1  ████████████████████████   20/20   Core Engine + CLI ✓
 Phase 2  █████████████████████████  13/13   Claude Code Plugin ✓
-Phase 3  ██░░░░░░░░░░░░░░░░ 3/25   MCP Server
+Phase 3  ███░░░░░░░░░░░░░░░ 4/25   MCP Server
 Phase 4  █████████████░░░░  8/13   VS Code Dashboard
 Phase 5  ░░░░░░░░░░░░░░░░   0/16   Chrome Extension
 Phase 6  ░░░░░░░░░░         0/10   Context Intelligence
 Phase 7  ░░░░░░░░░░░░       0/12   Testing Suite
 Phase 8  ░░░░░░░░░░░        0/11   DevOps + CI/CD
 ─────────────────────────────────────────────
-Total    ██████████████████████████████░░░░   44/120  steps
+Total    ██████████████████████████████░░░░   45/120  steps
 ```
