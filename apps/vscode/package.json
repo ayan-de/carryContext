@@ -3,7 +3,7 @@
   "displayName": "Context Carry",
   "description": "Save and restore AI session context across chats — visual dashboard for Context Carry",
   "version": "0.1.0",
-  "publisher": "thisisayande",
+  "publisher": "ayande",
   "license": "MIT",
   "engines": {
     "vscode": "^1.85.0"
