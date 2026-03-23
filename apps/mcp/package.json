@@ -1,12 +1,37 @@
 {
   "name": "@thisisayande/contextcarry-mcp",
   "version": "0.1.0",
+  "description": "MCP server for Context Carry — save and restore AI session context across editors",
   "type": "module",
+  "license": "MIT",
+  "author": "Ayan De <ayan-de>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ayan-de/carryContext",
+    "directory": "apps/mcp"
+  },
+  "keywords": [
+    "mcp",
+    "context",
+    "ai",
+    "session",
+    "cursor",
+    "windsurf",
+    "cline",
+    "claude",
+    "model-context-protocol"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
     "contextcarry-mcp": "./dist/index.js"
   },
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -17,7 +42,8 @@
     "build": "tsc && chmod +x dist/index.js",
     "dev": "tsc --watch",
     "lint": "eslint .",
-    "test": "vitest"
+    "test": "vitest",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "contextcarry-core": "workspace:*",
@@ -26,7 +52,6 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
     "typescript": "*"
   },
