@@ -8,12 +8,12 @@ Add the following to your Cursor MCP config (`.cursor/mcp.json` in your project 
 {
   "mcpServers": {
     "contextcarry": {
-      "command": "npx",
-      "args": ["-y", "contextcarry-mcp"],
-      "cwd": "/path/to/your/project"
+      "command": "npx",                                                                                                                   
+      "args": ["-y", "@thisisayande/contextcarry-mcp"]    
     }
   }
 }
+
 ```
 
 Replace `/path/to/your/project` with your actual project directory, or omit `cwd` if you always open Cursor from the project root.

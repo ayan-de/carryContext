@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "contextcarry": {
+      "command": "npx",                                                                                                                   
+      "args": ["-y", "@thisisayande/contextcarry-mcp"]    
+    }
+  }
+}
