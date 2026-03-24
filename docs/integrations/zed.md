@@ -10,7 +10,7 @@ Add the following to your Zed settings (`~/.config/zed/settings.json`):
     "contextcarry": {
       "command": {
         "path": "npx",
-        "args": ["-y", "contextcarry-mcp"]
+        "args": ["-y", "@thisisayande/contextcarry-mcp"]
       }
     }
   }

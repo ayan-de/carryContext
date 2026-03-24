@@ -9,14 +9,11 @@ Add the following to your Cline MCP settings (VS Code: `Cline > MCP Servers > Co
   "mcpServers": {
     "contextcarry": {
       "command": "npx",
-      "args": ["-y", "contextcarry-mcp"],
-      "cwd": "/path/to/your/project"
+      "args": ["-y", "@thisisayande/contextcarry-mcp"]
     }
   }
 }
 ```
-
-Replace `/path/to/your/project` with your actual project directory, or omit `cwd` if Cline spawns the server from the workspace root.
 
 ## Available Tools
 

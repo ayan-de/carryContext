@@ -12,7 +12,7 @@ Add the following to your Continue config (`~/.continue/config.json`):
         "transport": {
           "type": "stdio",
           "command": "npx",
-          "args": ["-y", "contextcarry-mcp"]
+          "args": ["-y", "@thisisayande/contextcarry-mcp"]
         }
       }
     ]

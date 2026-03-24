@@ -16,8 +16,6 @@ Add the following to your Cursor MCP config (`.cursor/mcp.json` in your project 
 
 ```
 
-Replace `/path/to/your/project` with your actual project directory, or omit `cwd` if you always open Cursor from the project root.
-
 ## Available Tools
 
 Once connected, the agent has access to these tools:

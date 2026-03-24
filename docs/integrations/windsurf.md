@@ -9,14 +9,11 @@ Add the following to your Windsurf MCP config (`~/.codeium/windsurf/mcp_config.j
   "mcpServers": {
     "contextcarry": {
       "command": "npx",
-      "args": ["-y", "contextcarry-mcp"],
-      "cwd": "/path/to/your/project"
+      "args": ["-y", "@thisisayande/contextcarry-mcp"]
     }
   }
 }
 ```
-
-Replace `/path/to/your/project` with your actual project directory, or omit `cwd` if Windsurf spawns the server from the workspace root.
 
 ## Available Tools
 
