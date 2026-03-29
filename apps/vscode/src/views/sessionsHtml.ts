@@ -66,7 +66,7 @@ export function getSessionsHtml(csp: string, codiconUri: vscode.Uri, nonce: stri
   .btn-icon {
     background: var(--vscode-textLink-foreground);
     border: none;
-    color: #888888;
+    color: var(--vscode-foreground);
     cursor: pointer;
     padding: 4px;
     display: flex;
@@ -283,7 +283,7 @@ export function getSessionsHtml(csp: string, codiconUri: vscode.Uri, nonce: stri
   .btn-change {
     background: var(--vscode-textLink-foreground);
     border: none;
-    color: #888888;
+    color: var(--vscode-foreground);
     cursor: pointer;
     font-size: 11px;
     padding: 2px 6px;
