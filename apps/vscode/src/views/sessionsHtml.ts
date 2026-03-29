@@ -64,21 +64,19 @@ export function getSessionsHtml(csp: string, codiconUri: vscode.Uri, nonce: stri
   #search::placeholder { color: var(--vscode-input-placeholderForeground); }
 
   .btn-icon {
-    background: none;
+    background: var(--vscode-textLink-foreground);
     border: none;
-    color: var(--vscode-icon-foreground);
+    color: #888888;
     cursor: pointer;
     padding: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 3px;
-    opacity: 0.75;
-    transition: opacity 0.1s, background 0.1s;
+    transition: background 0.1s;
   }
   .btn-icon:hover {
-    opacity: 1;
-    background: var(--vscode-toolbar-hoverBackground, var(--vscode-list-hoverBackground));
+    background: var(--vscode-textLink-activeForeground, var(--vscode-textLink-foreground));
   }
   .btn-icon .codicon { font-size: 15px; }
 
@@ -283,9 +281,9 @@ export function getSessionsHtml(csp: string, codiconUri: vscode.Uri, nonce: stri
   }
 
   .btn-change {
-    background: none;
-    border: 1px solid var(--vscode-button-secondaryBorder, transparent);
-    color: var(--vscode-textLink-foreground);
+    background: var(--vscode-textLink-foreground);
+    border: none;
+    color: #888888;
     cursor: pointer;
     font-size: 11px;
     padding: 2px 6px;
@@ -294,7 +292,7 @@ export function getSessionsHtml(csp: string, codiconUri: vscode.Uri, nonce: stri
     transition: background 0.1s;
     white-space: nowrap;
   }
-  .btn-change:hover { background: var(--vscode-list-hoverBackground); }
+  .btn-change:hover { background: var(--vscode-textLink-activeForeground, var(--vscode-textLink-foreground)); }
 </style>
 </head>
 <body>
