@@ -293,29 +293,114 @@ export function getSessionsHtml(csp: string, codiconUri: vscode.Uri, nonce: stri
     white-space: nowrap;
   }
   .btn-change:hover { background: var(--vscode-textLink-activeForeground, var(--vscode-textLink-foreground)); }
+
+  /* ── Account Page ── */
+  #accountPage {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .account-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--vscode-panel-border, var(--vscode-widget-border, transparent));
+  }
+
+  .account-header h1 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--vscode-foreground);
+  }
+
+  .account-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .btn-signup-account {
+    background: var(--vscode-textLink-foreground);
+    border: none;
+    color: var(--vscode-button-foreground, white);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 8px 16px;
+    border-radius: 3px;
+    transition: background 0.1s;
+    min-width: 180px;
+  }
+  .btn-signup-account:hover {
+    background: var(--vscode-textLink-activeForeground, var(--vscode-textLink-foreground));
+  }
+
+  .account-terms {
+    margin-top: 16px;
+    font-size: 10px;
+    color: var(--vscode-descriptionForeground);
+    text-align: center;
+    line-height: 1.5;
+    max-width: 260px;
+  }
+
+  .account-terms a {
+    color: var(--vscode-textLink-foreground);
+    text-decoration: none;
+  }
+  .account-terms a:hover { text-decoration: underline; }
+
+  .account-sparkle {
+    font-size: 48px;
+    margin-bottom: 66px;
+  }
 </style>
 </head>
 <body>
-  <div class="search-wrapper">
-    <div class="search-box">
-      <i class="codicon codicon-search"></i>
-      <input id="search" type="text" placeholder="Search projects, branches…" spellcheck="false" autocomplete="off" />
+  <!-- Sessions View -->
+  <div id="sessionsView" style="display: flex; flex-direction: column; height: 100%;">
+    <div class="search-wrapper">
+      <div class="search-box">
+        <i class="codicon codicon-search"></i>
+        <input id="search" type="text" placeholder="Search projects, branches…" spellcheck="false" autocomplete="off" />
+      </div>
+      <button class="btn-icon" id="refreshBtn" title="Refresh">
+        <i class="codicon codicon-refresh"></i>
+      </button>
     </div>
-    <button class="btn-icon" id="refreshBtn" title="Refresh">
-      <i class="codicon codicon-refresh"></i>
-    </button>
+
+    <div class="tree-scroll">
+      <div id="tree"></div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-info">
+        <i class="codicon codicon-hubot"></i>
+        <span class="footer-provider" id="providerLabel">--</span>
+      </div>
+      <button class="btn-change" id="changeBtn">Change</button>
+    </div>
   </div>
 
-  <div class="tree-scroll">
-    <div id="tree"></div>
-  </div>
-
-  <div class="footer">
-    <div class="footer-info">
-      <i class="codicon codicon-hubot"></i>
-      <span class="footer-provider" id="providerLabel">--</span>
+  <!-- Account View -->
+  <div id="accountPage">
+    <div class="account-header">
+      <h1>Account</h1>
+      <button class="btn-icon" id="backBtn" title="Back">
+        <i class="codicon codicon-arrow-left"></i>
+      </button>
     </div>
-    <button class="btn-change" id="changeBtn">Change</button>
+    <div class="account-content">
+      <div class="account-sparkle">✨</div>
+      <button class="btn-signup-account" id="signupBtn">Sign up with ContextCarry</button>
+      <p class="account-terms">
+        By continuing, you agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+      </p>
+    </div>
   </div>
 
   <script nonce="${nonce}">
@@ -343,6 +428,16 @@ export function getSessionsHtml(csp: string, codiconUri: vscode.Uri, nonce: stri
       }, 200);
     });
 
+    // Account view handlers
+    document.getElementById('backBtn').addEventListener('click', () => {
+      document.getElementById('accountPage').style.display = 'none';
+      document.getElementById('sessionsView').style.display = 'flex';
+    });
+
+    document.getElementById('signupBtn').addEventListener('click', () => {
+      vscode.postMessage({ type: 'openSignup' });
+    });
+
     window.addEventListener('message', (e) => {
       if (e.data.type === 'tree') renderTree(e.data.tree, e.data.query);
       if (e.data.type === 'config') {
@@ -350,6 +445,10 @@ export function getSessionsHtml(csp: string, codiconUri: vscode.Uri, nonce: stri
           ? e.data.provider + ' / ' + e.data.model
           : e.data.provider;
         document.getElementById('providerLabel').textContent = label;
+      }
+      if (e.data.type === 'showAccount') {
+        document.getElementById('sessionsView').style.display = 'none';
+        document.getElementById('accountPage').style.display = 'flex';
       }
     });
 

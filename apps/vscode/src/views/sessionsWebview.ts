@@ -14,6 +14,7 @@ import { getSessionsHtml } from './sessionsHtml';
 export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'contextcarry.sessions';
   private _view?: vscode.WebviewView;
+  showAccountPage?: () => void;
 
   constructor(
     private readonly extensionUri: vscode.Uri,
@@ -158,8 +159,19 @@ export class SessionsWebviewProvider implements vscode.WebviewViewProvider {
           }
           break;
         }
+        case 'openSignup': {
+          vscode.env.openExternal(vscode.Uri.parse('https://cc.ayande.xyz'));
+          break;
+        }
       }
     });
+
+    // Show account page when requested
+    this.showAccountPage = () => {
+      if (this._view) {
+        this._view.webview.postMessage({ type: 'showAccount' });
+      }
+    };
   }
 
   private async _sendConfig() {

@@ -34,6 +34,9 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('contextcarry.diff', () => {
       // Handled inside webview
     }),
+    vscode.commands.registerCommand('contextcarry.profile', () => {
+      sessionsProvider.showAccountPage?.();
+    }),
   );
 }
 

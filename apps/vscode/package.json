@@ -49,6 +49,11 @@
         "command": "contextcarry.search",
         "title": "Context Carry: Search Sessions",
         "icon": "$(search)"
+      },
+      {
+        "command": "contextcarry.profile",
+        "title": "Account",
+        "icon": "$(account)"
       }
     ],
     "viewsContainers": {
@@ -71,6 +76,11 @@
     },
     "menus": {
       "view/title": [
+        {
+          "command": "contextcarry.profile",
+          "when": "view == contextcarry.sessions",
+          "group": "navigation"
+        }
       ],
       "view/item/context": [
         {
